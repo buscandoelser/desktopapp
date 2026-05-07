@@ -25,7 +25,7 @@ public class InternoFormController {
     @FXML private TextField    txtDni;
     @FXML private DatePicker   dpFechaNacimiento;
     @FXML private Label        lblEdad;
-    @FXML private TextArea     txtDireccion;
+    @FXML private TextField    txtDireccion;
     @FXML private CheckBox     chkHijos;
     @FXML private Spinner<Integer> spnCantHijos;
     @FXML private CheckBox     chkJudicializado;

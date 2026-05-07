@@ -27,13 +27,18 @@ public class AuthService {
 
             try (Response response = client.newCall(request).execute()) {
                 String responseBody = response.body().string();
-                JsonNode node = mapper.readTree(responseBody);
 
                 if (!response.isSuccessful()) {
-                    String msg = node.has("mensaje") ? node.get("mensaje").asText() : "Error de autenticación";
-                    return LoginResult.error(msg);
+                    try {
+                        JsonNode node = mapper.readTree(responseBody);
+                        String msg = node.has("mensaje") ? node.get("mensaje").asText() : "Error de autenticación (HTTP " + response.code() + ")";
+                        return LoginResult.error(msg);
+                    } catch (Exception ex) {
+                        return LoginResult.error("Error HTTP " + response.code() + " — respuesta inesperada del servidor");
+                    }
                 }
 
+                JsonNode node = mapper.readTree(responseBody);
                 return LoginResult.success(
                         node.get("token").asText(),
                         node.get("refreshToken").asText(),
@@ -44,6 +49,7 @@ public class AuthService {
                 );
             }
         } catch (IOException e) {
+            System.err.println("[AuthService] Error de conexión: " + e);
             return LoginResult.error("Error de conexión: " + e.getMessage());
         }
     }
