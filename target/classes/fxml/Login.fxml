@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.gestion.controllers.LoginController"
+           styleClass="root-dark"
+           prefWidth="640" prefHeight="520">
+
+    <!-- Fondo con gradiente -->
+    <VBox alignment="CENTER" spacing="0">
+
+        <!-- Tarjeta de login centrada -->
+        <VBox styleClass="login-card" maxWidth="420" alignment="TOP_CENTER" spacing="0">
+
+            <!-- Logo / Encabezado -->
+            <VBox alignment="CENTER" spacing="8" styleClass="login-header">
+                <Label text="⚕" styleClass="login-logo-icon"/>
+                <Label text="COMUNIDAD TERAPÉUTICA" styleClass="login-title"/>
+                <Label text="Sistema de Gestión de Internos" styleClass="login-subtitle"/>
+            </VBox>
+
+            <!-- Formulario -->
+            <VBox spacing="20" styleClass="login-form-body">
+
+                <!-- Campo usuario -->
+                <VBox spacing="6">
+                    <Label text="USUARIO" styleClass="input-label"/>
+                    <TextField fx:id="txtUsuario"
+                               promptText="Ingresá tu usuario"
+                               styleClass="input-field"/>
+                </VBox>
+
+                <!-- Campo contraseña -->
+                <VBox spacing="6">
+                    <Label text="CONTRASEÑA" styleClass="input-label"/>
+                    <StackPane>
+                        <PasswordField fx:id="txtPassword"
+                                       promptText="Ingresá tu contraseña"
+                                       styleClass="input-field"/>
+                        <TextField fx:id="txtPasswordVisible"
+                                   promptText="Ingresá tu contraseña"
+                                   styleClass="input-field"/>
+                    </StackPane>
+                    <CheckBox fx:id="chkMostrarPassword"
+                              text="Mostrar contraseña"
+                              styleClass="check-label"
+                              onAction="#onTogglePassword"/>
+                </VBox>
+
+                <!-- Mensaje de error -->
+                <Label fx:id="lblError"
+                       styleClass="login-error"
+                       wrapText="true"
+                       maxWidth="360"/>
+
+                <!-- Botón login -->
+                <Button fx:id="btnLogin"
+                        text="INICIAR SESIÓN"
+                        onAction="#onLogin"
+                        styleClass="btn-primary-large"
+                        maxWidth="Infinity"
+                        defaultButton="true"/>
+
+                <!-- Spinner de carga -->
+                <ProgressIndicator fx:id="progressIndicator"
+                                   prefWidth="36" prefHeight="36"
+                                   styleClass="progress-acento"/>
+                <VBox.margin>
+                    <Insets top="-10"/>
+                </VBox.margin>
+
+            </VBox>
+
+            <!-- Footer -->
+            <Label text="v1.0.0 — Sprint 1"
+                   styleClass="login-footer"
+                   alignment="CENTER"
+                   maxWidth="Infinity"/>
+
+        </VBox>
+    </VBox>
+</StackPane>

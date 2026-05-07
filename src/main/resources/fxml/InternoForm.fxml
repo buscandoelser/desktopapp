@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.InternoFormController"
+      styleClass="root-dark,form-container"
+      spacing="0"
+      prefWidth="860" prefHeight="680">
+
+    <!-- ── Indicador de pasos ────────────────────────────────── -->
+    <HBox styleClass="wizard-steps" alignment="CENTER" spacing="0">
+        <HBox fx:id="step1Indicator" styleClass="step-item,step-active" alignment="CENTER" spacing="8">
+            <Label text="1" styleClass="step-number"/>
+            <Label text="Datos personales" styleClass="step-label"/>
+        </HBox>
+        <Region styleClass="step-connector" prefWidth="40"/>
+        <HBox fx:id="step2Indicator" styleClass="step-item,step-pending" alignment="CENTER" spacing="8">
+            <Label text="2" styleClass="step-number"/>
+            <Label text="Salud y contexto" styleClass="step-label"/>
+        </HBox>
+        <Region styleClass="step-connector" prefWidth="40"/>
+        <HBox fx:id="step3Indicator" styleClass="step-item,step-pending" alignment="CENTER" spacing="8">
+            <Label text="3" styleClass="step-number"/>
+            <Label text="Cobertura y contactos" styleClass="step-label"/>
+        </HBox>
+    </HBox>
+
+    <!-- ── Título del paso actual ────────────────────────────── -->
+    <HBox styleClass="wizard-header" alignment="CENTER_LEFT">
+        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+        <Label fx:id="lblTituloPaso" text="Paso 1 de 3 — Datos Personales" styleClass="wizard-step-title"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- ── CONTENIDO (paneles de cada paso) ──────────────────── -->
+    <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" styleClass="scroll-dark">
+        <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+
+        <VBox>
+            <!-- ══ PASO 1: Datos personales ══════════════════════ -->
+            <StackPane fx:id="panelPaso1">
+                <GridPane styleClass="form-grid" hgap="16" vgap="14">
+                    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/>
+                        <ColumnConstraints percentWidth="50"/>
+                    </columnConstraints>
+
+                    <Label text="NOMBRE *" styleClass="input-label"        GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="txtNombre" promptText="Nombre"       GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="input-field"/>
+
+                    <Label text="APELLIDO *" styleClass="input-label"      GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <TextField fx:id="txtApellido" promptText="Apellido"   GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="input-field"/>
+
+                    <Label text="DNI *" styleClass="input-label"           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextField fx:id="txtDni" promptText="Sin puntos"      GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="input-field"/>
+
+                    <Label text="FECHA DE NACIMIENTO *" styleClass="input-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT"             GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <DatePicker fx:id="dpFechaNacimiento" styleClass="date-picker" HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblEdad" text="— años" styleClass="label-secondary"/>
+                    </HBox>
+
+                    <Label text="FECHA DE INGRESO *" styleClass="input-label" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <DatePicker fx:id="dpFechaIngreso" styleClass="date-picker"
+                                GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+
+                    <Label text="DIRECCIÓN" styleClass="input-label"       GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    <TextField fx:id="txtDireccion" promptText="Calle, número, ciudad"
+                               GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="input-field"/>
+
+                    <!-- Hijos -->
+                    <HBox spacing="16" alignment="CENTER_LEFT"             GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2">
+                        <CheckBox fx:id="chkHijos" text="¿Tiene hijos?" styleClass="check-label"/>
+                        <Label text="Cantidad:" styleClass="label-secondary"/>
+                        <Spinner fx:id="spnCantHijos" prefWidth="80" styleClass="spinner-field"/>
+                        <CheckBox fx:id="chkJudicializado" text="¿Es judicializado?" styleClass="check-label"/>
+                    </HBox>
+                </GridPane>
+            </StackPane>
+
+            <!-- ══ PASO 2: Salud y contexto ═══════════════════════ -->
+            <StackPane fx:id="panelPaso2" visible="false" managed="false">
+                <GridPane styleClass="form-grid" hgap="16" vgap="14">
+                    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/>
+                        <ColumnConstraints percentWidth="50"/>
+                    </columnConstraints>
+
+                    <CheckBox fx:id="chkInternadoAntes" text="¿Estuvo internado antes?"
+                              styleClass="check-label"
+                              GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <TextField fx:id="txtLugarAnterior" promptText="¿Dónde?"
+                               styleClass="input-field"
+                               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <CheckBox fx:id="chkMedicacion" text="¿Toma medicación?"
+                              styleClass="check-label"
+                              GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <TextArea fx:id="txtDetalleMedicacion" promptText="¿Cuál? Descripción..."
+                              styleClass="input-field" prefRowCount="2" wrapText="true"
+                              GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <CheckBox fx:id="chkPatologia" text="¿Tiene patología o enfermedad?"
+                              styleClass="check-label"
+                              GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <TextArea fx:id="txtDetallePatologia" promptText="¿Cuál? Descripción..."
+                              styleClass="input-field" prefRowCount="2" wrapText="true"
+                              GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label text="NIVEL DE ESTUDIOS" styleClass="input-label"
+                           GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <ComboBox fx:id="cmbNivelEstudios" prefWidth="240"
+                              styleClass="combo-field"
+                              GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                </GridPane>
+            </StackPane>
+
+            <!-- ══ PASO 3: Cobertura y contactos ══════════════════ -->
+            <StackPane fx:id="panelPaso3" visible="false" managed="false">
+                <VBox spacing="20">
+                    <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+                    <!-- Cobertura -->
+                    <GridPane hgap="16" vgap="14" styleClass="form-grid">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <CheckBox fx:id="chkObraSocial" text="¿Tiene obra social?"
+                                  styleClass="check-label"
+                                  GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="txtObraSocial" promptText="Nombre de la obra social"
+                                   styleClass="input-field"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <CheckBox fx:id="chkPension" text="¿Cobra pensión?"
+                                  styleClass="check-label"
+                                  GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="txtTipoPension" promptText="Tipo de pensión"
+                                   styleClass="input-field"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="CLASIFICACIÓN DE PAGO *" styleClass="input-label"
+                               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <ComboBox fx:id="cmbTipoPago" prefWidth="240"
+                                  styleClass="combo-field"
+                                  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <!-- Contactos familiares -->
+                    <Label text="CONTACTOS FAMILIARES (mínimo 2 obligatorios)"
+                           styleClass="section-subtitle"/>
+
+                    <VBox fx:id="vboxContactos" spacing="10">
+                        <!-- Las filas de contacto se agregan dinámicamente -->
+                        <Button fx:id="btnAgregarContacto"
+                                text="＋ Agregar contacto"
+                                onAction="#onAgregarContacto"
+                                styleClass="btn-secondary-sm"/>
+                    </VBox>
+                </VBox>
+            </StackPane>
+        </VBox>
+    </ScrollPane>
+
+    <Separator/>
+
+    <!-- ── Barra de botones ──────────────────────────────────── -->
+    <HBox styleClass="wizard-footer" alignment="CENTER_RIGHT" spacing="12">
+        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+
+        <Button text="CANCELAR" onAction="#onCancelar" styleClass="btn-ghost"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnAnterior" text="◀ ANTERIOR"  onAction="#onAnterior"  styleClass="btn-secondary"/>
+        <Button fx:id="btnSiguiente" text="SIGUIENTE ▶" onAction="#onSiguiente" styleClass="btn-secondary"/>
+        <Button fx:id="btnGuardar"   text="GUARDAR ✓"   onAction="#onGuardar"   styleClass="btn-primary"
+                visible="false" managed="false"/>
+        <ProgressIndicator fx:id="progressGuardar" prefWidth="28" prefHeight="28"
+                           styleClass="progress-acento" visible="false"/>
+    </HBox>
+
+</VBox>
