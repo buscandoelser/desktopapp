@@ -6,7 +6,7 @@ public final class AppConfig {
 
     // URL base de la API — sobreescribible con variable de entorno
     public static final String API_BASE_URL =
-            System.getenv().getOrDefault("API_BASE_URL", "http://localhost:3000/api");
+            System.getenv().getOrDefault("API_BASE_URL", "https://backend-t07u.onrender.com");
 
     // ── Sesión activa (en memoria, nunca en disco) ────────────
     private static String  jwtToken;
