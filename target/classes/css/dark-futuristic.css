@@ -19,11 +19,111 @@
 /* ── Root ───────────────────────────────────────────────────── */
 .root-dark {
     -fx-background-color: #0D1B2A;
-    -fx-font-family: "System";
+    -fx-font-family: "Segoe UI", "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 15px;
+    -fx-font-smoothing-type: lcd;
 }
 
-/* ── LOGIN ──────────────────────────────────────────────────── */
+/* ── LOGIN SPLIT LAYOUT ─────────────────────────────────────── */
+/* ACCENT = #F9BF36 (dorado)                                    */
+
+.login-split-root {
+    -fx-background-color: #FFFFFF;
+}
+
+/* Panel izquierdo (blanco) */
+.login-left-panel {
+    -fx-background-color: #FFFFFF;
+    -fx-opacity: 1;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.login-deco-tl {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 0 0 60 0;
+}
+
+.login-deco-br {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 60 0 0 0;
+}
+
+.login-left-form {
+    -fx-padding: 0 40 0 40;
+}
+
+.login-left-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+}
+
+.login-input {
+    -fx-background-color: #F8F8F8;
+    -fx-text-fill: #222222;
+    -fx-prompt-text-fill: #AAAAAA;
+    -fx-font-size: 14px;
+    -fx-padding: 12 14 12 14;
+    -fx-background-radius: 8;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+.login-input:focused {
+    -fx-border-color: #F9BF36;
+    -fx-background-color: #FFFDF5;
+    -fx-effect: dropshadow(gaussian, rgba(249,191,54,0.28), 10, 0, 0, 0);
+}
+
+.login-btn {
+    -fx-background-color: #F9BF36;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 13 24 13 24;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(249,191,54,0.45), 12, 0, 0, 4);
+}
+
+.login-btn:hover {
+    -fx-background-color: #FFC93A;
+}
+
+.login-btn:pressed {
+    -fx-background-color: #E5A820;
+    -fx-effect: dropshadow(gaussian, rgba(249,191,54,0.2), 6, 0, 0, 2);
+}
+
+.login-btn:disabled {
+    -fx-opacity: 0.55;
+}
+
+.login-error {
+    -fx-text-fill: #D32F2F;
+    -fx-font-size: 13px;
+    -fx-background-color: rgba(211,47,47,0.10);
+    -fx-background-radius: 6;
+    -fx-padding: 8 12 8 12;
+}
+
+.login-progress {
+    -fx-progress-color: #F9BF36;
+    -fx-accent: #F9BF36;
+}
+
+/* Panel derecho (imagen + overlay dorado) */
+.login-right-panel {
+    -fx-background-color: transparent;
+}
+
+.login-right-overlay {
+    -fx-background-color: rgba(249,191,54,0.62);
+}
+
+/* ── LOGIN legacy (conservado para compatibilidad) ───────────── */
 .login-card {
     -fx-background-color: #162231;
     -fx-background-radius: 16;
@@ -58,14 +158,6 @@
 
 .login-form-body {
     -fx-padding: 28 40 28 40;
-}
-
-.login-error {
-    -fx-text-fill: #EF5350;
-    -fx-font-size: 14px;
-    -fx-background-color: rgba(239,83,80,0.12);
-    -fx-background-radius: 6;
-    -fx-padding: 8 12 8 12;
 }
 
 .login-footer {

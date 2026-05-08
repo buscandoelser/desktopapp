@@ -5,83 +5,86 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.gestion.controllers.LoginController"
-           styleClass="root-dark"
-           prefWidth="640" prefHeight="520">
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.LoginController"
+      styleClass="login-split-root"
+      prefWidth="860" prefHeight="560">
 
-    <!-- Fondo con gradiente -->
-    <VBox alignment="CENTER" spacing="0">
+    <!-- PANEL IZQUIERDO — Formulario -->
+    <StackPane HBox.hgrow="ALWAYS" prefWidth="430" styleClass="login-left-panel">
 
-        <!-- Tarjeta de login centrada -->
-        <VBox styleClass="login-card" maxWidth="420" alignment="TOP_CENTER" spacing="0">
+        <!-- Decoración esquinas -->
+        <Region styleClass="login-deco-tl" StackPane.alignment="TOP_LEFT"
+                prefWidth="110" prefHeight="110"/>
+        <Region styleClass="login-deco-br" StackPane.alignment="BOTTOM_RIGHT"
+                prefWidth="90" prefHeight="90"/>
 
-            <!-- Logo / Encabezado -->
-            <VBox alignment="CENTER" spacing="8" styleClass="login-header">
-                <Label text="⚕" styleClass="login-logo-icon"/>
-                <Label text="COMUNIDAD TERAPÉUTICA" styleClass="login-title"/>
-                <Label text="Sistema de Gestión de Internos" styleClass="login-subtitle"/>
-            </VBox>
+        <!-- Contenido centrado -->
+        <VBox alignment="CENTER" spacing="24" styleClass="login-left-form">
 
-            <!-- Formulario -->
-            <VBox spacing="20" styleClass="login-form-body">
+            <!-- Logo -->
+            <ImageView fitWidth="140" preserveRatio="true" smooth="true">
+                <image>
+                    <Image url="@../logo-login.jpeg"/>
+                </image>
+            </ImageView>
 
-                <!-- Campo usuario -->
-                <VBox spacing="6">
-                    <Label text="USUARIO" styleClass="input-label"/>
-                    <TextField fx:id="txtUsuario"
-                               promptText="Ingresá tu usuario"
-                               styleClass="input-field"/>
-                </VBox>
+            <!-- Campo usuario -->
+            <TextField fx:id="txtUsuario"
+                       promptText="Usuario"
+                       styleClass="login-input"
+                       maxWidth="300"/>
 
-                <!-- Campo contraseña -->
-                <VBox spacing="6">
-                    <Label text="CONTRASEÑA" styleClass="input-label"/>
-                    <StackPane>
-                        <PasswordField fx:id="txtPassword"
-                                       promptText="Ingresá tu contraseña"
-                                       styleClass="input-field"/>
-                        <TextField fx:id="txtPasswordVisible"
-                                   promptText="Ingresá tu contraseña"
-                                   styleClass="input-field"/>
-                    </StackPane>
-                    <CheckBox fx:id="chkMostrarPassword"
-                              text="Mostrar contraseña"
-                              styleClass="check-label"
-                              onAction="#onTogglePassword"/>
-                </VBox>
+            <!-- Campo contraseña -->
+            <StackPane maxWidth="300">
+                <PasswordField fx:id="txtPassword"
+                               promptText="Contraseña"
+                               styleClass="login-input"/>
+                <TextField fx:id="txtPasswordVisible"
+                           promptText="Contraseña"
+                           styleClass="login-input"/>
+            </StackPane>
 
-                <!-- Mensaje de error -->
-                <Label fx:id="lblError"
-                       styleClass="login-error"
-                       wrapText="true"
-                       maxWidth="360"/>
+            <!-- Checkbox oculto — requerido por el controlador -->
+            <CheckBox fx:id="chkMostrarPassword"
+                      visible="false" managed="false"
+                      onAction="#onTogglePassword"/>
 
-                <!-- Botón login -->
-                <Button fx:id="btnLogin"
-                        text="INICIAR SESIÓN"
-                        onAction="#onLogin"
-                        styleClass="btn-primary-large"
-                        maxWidth="Infinity"
-                        defaultButton="true"/>
+            <!-- Mensaje de error -->
+            <Label fx:id="lblError"
+                   styleClass="login-error"
+                   wrapText="true"
+                   maxWidth="300"/>
 
-                <!-- Spinner de carga -->
-                <ProgressIndicator fx:id="progressIndicator"
-                                   prefWidth="36" prefHeight="36"
-                                   styleClass="progress-acento"/>
-                <VBox.margin>
-                    <Insets top="-10"/>
-                </VBox.margin>
+            <!-- Botón -->
+            <Button fx:id="btnLogin"
+                    text="Iniciar Sesión"
+                    onAction="#onLogin"
+                    styleClass="login-btn"
+                    prefWidth="300"
+                    defaultButton="true"/>
 
-            </VBox>
-
-            <!-- Footer -->
-            <Label text="v1.0.0 — Sprint 1"
-                   styleClass="login-footer"
-                   alignment="CENTER"
-                   maxWidth="Infinity"/>
+            <!-- Spinner de carga -->
+            <ProgressIndicator fx:id="progressIndicator"
+                               prefWidth="32" prefHeight="32"
+                               styleClass="login-progress"/>
 
         </VBox>
-    </VBox>
-</StackPane>
+    </StackPane>
+
+    <!-- PANEL DERECHO — Imagen con overlay dorado -->
+    <StackPane HBox.hgrow="ALWAYS" prefWidth="430" styleClass="login-right-panel">
+
+        <!-- Imagen de fondo -->
+        <ImageView fitWidth="430" fitHeight="560">
+            <image>
+                <Image url="@../login-bg.jpeg"/>
+            </image>
+        </ImageView>
+
+
+
+    </StackPane>
+
+</HBox>
