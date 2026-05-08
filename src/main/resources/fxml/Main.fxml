@@ -15,7 +15,7 @@
         <HBox styleClass="header" prefHeight="64" alignment="CENTER_LEFT" spacing="16">
             <padding><Insets left="24" right="24"/></padding>
 
-            <Label text="⚕ Sistema de Internos" styleClass="header-logo"/>
+            <Label text="Buscando El Ser" styleClass="header-logo"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
@@ -24,21 +24,27 @@
                 <Label fx:id="lblUsuarioRol"    text="Rol"     styleClass="header-user-rol"/>
             </VBox>
 
-            <Button text="⏻  CERRAR SESIÓN"
+            <Button text="Salir"
                     onAction="#onCerrarSesion"
                     styleClass="btn-logout"/>
         </HBox>
     </top>
 
-    <!-- ── SIDEBAR IZQUIERDO (240px) ─────────────────────────── -->
+    <!-- ── SIDEBAR IZQUIERDO (248px) ─────────────────────────── -->
     <left>
-        <VBox fx:id="sidebar" styleClass="sidebar" prefWidth="240" spacing="4">
-            <padding><Insets top="24" bottom="24" left="12" right="12"/></padding>
+        <VBox fx:id="sidebar" styleClass="sidebar" prefWidth="248" spacing="2">
+            <padding><Insets top="22" bottom="16" left="14" right="14"/></padding>
 
             <Label text="NAVEGACIÓN" styleClass="sidebar-section-label"/>
 
+            <Button fx:id="btnDashboard"
+                    text="🏠  Panel"
+                    onAction="#onDashboard"
+                    styleClass="sidebar-btn"
+                    maxWidth="Infinity"/>
+
             <Button fx:id="btnInternos"
-                    text="👤  Internos"
+                    text="👥  Internos"
                     onAction="#onInternos"
                     styleClass="sidebar-btn"
                     maxWidth="Infinity"/>
@@ -49,6 +55,12 @@
                     styleClass="sidebar-btn"
                     maxWidth="Infinity"/>
 
+            <Button fx:id="btnPagos"
+                    text="💳  Pagos"
+                    onAction="#onPagos"
+                    styleClass="sidebar-btn"
+                    maxWidth="Infinity"/>
+
             <Button fx:id="btnReportes"
                     text="📊  Reportes"
                     onAction="#onReportes"
@@ -56,6 +68,18 @@
                     maxWidth="Infinity"/>
 
             <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Tarjeta de capacidad -->
+            <VBox styleClass="sidebar-capacity-card" spacing="6">
+                <padding><Insets top="4" bottom="4" left="0" right="0"/></padding>
+                <Label text="Casa Central" styleClass="sidebar-card-title"/>
+                <HBox alignment="CENTER_LEFT" spacing="6">
+                    <Region styleClass="status-dot"/>
+                    <Label fx:id="lblCapacidadMeta" text="— internos · — plazas libres" styleClass="sidebar-card-meta"/>
+                </HBox>
+                <ProgressBar fx:id="pbCapacidad" progress="0" maxWidth="Infinity" styleClass="capacity-bar"/>
+                <Label fx:id="lblCapacidadPct" text="Cargando..." styleClass="sidebar-card-foot"/>
+            </VBox>
 
             <Separator styleClass="sidebar-separator"/>
 
@@ -71,7 +95,7 @@
     <!-- ── ÁREA DE CONTENIDO ─────────────────────────────────── -->
     <center>
         <StackPane fx:id="contenidoPrincipal" styleClass="content-area">
-            <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+            <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
         </StackPane>
     </center>
 

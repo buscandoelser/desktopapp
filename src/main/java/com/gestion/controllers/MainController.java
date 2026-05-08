@@ -2,7 +2,9 @@ package com.gestion.controllers;
 
 import com.gestion.config.AppConfig;
 import com.gestion.services.AuthService;
+import com.gestion.services.InternoService;
 import com.gestion.utils.AlertHelper;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -12,6 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.concurrent.CompletableFuture;
+
 public class MainController {
 
     @FXML private Label       lblUsuarioNombre;
@@ -19,11 +23,18 @@ public class MainController {
     @FXML private StackPane   contenidoPrincipal;
     @FXML private VBox        sidebar;
 
-    // Botones de navegación del sidebar
+    // Botones de navegación
+    @FXML private Button btnDashboard;
     @FXML private Button btnInternos;
     @FXML private Button btnCobranzas;
+    @FXML private Button btnPagos;
     @FXML private Button btnReportes;
     @FXML private Button btnConfiguracion;
+
+    // Capacity card
+    @FXML private ProgressBar pbCapacidad;
+    @FXML private Label       lblCapacidadMeta;
+    @FXML private Label       lblCapacidadPct;
 
     private Button botonActivo;
 
@@ -37,15 +48,29 @@ public class MainController {
             btnConfiguracion.setVisible(false);
             btnConfiguracion.setManaged(false);
         }
+        if (!AppConfig.tieneRol("admin", "operador", "contador")) {
+            btnCobranzas.setVisible(false);
+            btnCobranzas.setManaged(false);
+            btnPagos.setVisible(false);
+            btnPagos.setManaged(false);
+        }
 
-        // Cargar internos por defecto
-        navegarA("internos", btnInternos);
+        actualizarCapacidad();
+
+        // Pantalla inicial: Dashboard
+        navegarA("dashboard", btnDashboard);
     }
 
+    // ── Handlers de navegación ────────────────────────────────
+    @FXML private void onDashboard()      { navegarA("dashboard",     btnDashboard); }
     @FXML private void onInternos()       { navegarA("internos",       btnInternos); }
     @FXML private void onCobranzas()      { navegarA("cobranzas",      btnCobranzas); }
+    @FXML private void onPagos()          { navegarA("pagos",          btnPagos); }
     @FXML private void onReportes()       { navegarA("reportes",       btnReportes); }
     @FXML private void onConfiguracion()  { navegarA("configuracion",  btnConfiguracion); }
+
+    /** Permite al DashboardController navegar a cobranzas */
+    public void navegarACobranzas() { navegarA("cobranzas", btnCobranzas); }
 
     @FXML
     private void onCerrarSesion() {
@@ -58,7 +83,7 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 640, 520);
+            Scene scene = new Scene(root, 860, 560);
             scene.getStylesheets().add(
                     getClass().getResource("/css/dark-futuristic.css").toExternalForm()
             );
@@ -73,16 +98,21 @@ public class MainController {
         }
     }
 
-    // ── Navegación ────────────────────────────────────────────
+    // ── Navegación central ────────────────────────────────────
     public void navegarA(String modulo, Button boton) {
         try {
             String fxmlPath = "/fxml/" + capitalize(modulo) + ".fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Node contenido = loader.load();
 
+            // Pasar referencia al DashboardController para que pueda navegar
+            if ("dashboard".equals(modulo)) {
+                DashboardController dc = loader.getController();
+                dc.setMainController(this);
+            }
+
             contenidoPrincipal.getChildren().setAll(contenido);
 
-            // Marcar botón activo
             if (botonActivo != null) botonActivo.getStyleClass().remove("sidebar-btn-active");
             if (boton != null) {
                 boton.getStyleClass().add("sidebar-btn-active");
@@ -91,6 +121,24 @@ public class MainController {
         } catch (Exception e) {
             AlertHelper.info("Módulo '" + modulo + "' disponible próximamente.");
         }
+    }
+
+    // ── Capacity bar: carga el total de activos vs capacidad ──
+    private void actualizarCapacidad() {
+        final int CAPACIDAD_TOTAL = 40;
+        CompletableFuture
+            .supplyAsync(() -> InternoService.listar("activo", null, 1))
+            .thenAcceptAsync(result -> {
+                if (!result.success) return;
+                int activos  = result.total;
+                int libres   = Math.max(0, CAPACIDAD_TOTAL - activos);
+                double pct   = (double) activos / CAPACIDAD_TOTAL;
+                int pctInt   = (int) Math.round(pct * 100);
+
+                pbCapacidad.setProgress(pct);
+                lblCapacidadMeta.setText(activos + " internos · " + libres + " plazas libres");
+                lblCapacidadPct.setText("Capacidad " + pctInt + "%");
+            }, Platform::runLater);
     }
 
     // ── Helpers ───────────────────────────────────────────────

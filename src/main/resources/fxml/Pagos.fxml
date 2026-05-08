@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.PagosController"
+      styleClass="module-container"
+      spacing="20">
+
+    <!-- ── Encabezado ─────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <Label text="Pagos a proveedores" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ProgressIndicator fx:id="progressIndicator" prefWidth="28" prefHeight="28"
+                           styleClass="progress-acento" visible="false"/>
+        <Button fx:id="btnNuevo"
+                text="＋  Nuevo pago"
+                onAction="#onNuevo"
+                styleClass="btn-primary"/>
+    </HBox>
+
+    <!-- ── Barra de filtros ──────────────────────────────────── -->
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="filter-bar">
+        <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+
+        <Label text="Buscar:" styleClass="filter-label"/>
+        <TextField fx:id="txtBusqueda"
+                   promptText="Proveedor o concepto..."
+                   prefWidth="280"
+                   styleClass="input-field-sm"/>
+
+        <Label text="Estado:" styleClass="filter-label"/>
+        <ComboBox fx:id="cmbEstado" prefWidth="140" styleClass="combo-field"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblTotal" text="Total: — registros" styleClass="label-secondary"/>
+    </HBox>
+
+    <!-- ── Tabla ─────────────────────────────────────────────── -->
+    <VBox styleClass="card" VBox.vgrow="ALWAYS" spacing="0">
+        <HBox styleClass="card-head">
+            <Label text="Egresos del mes" styleClass="card-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Exportar CSV" styleClass="btn-link" onAction="#onExportar"/>
+        </HBox>
+        <TableView fx:id="tablaPagos" VBox.vgrow="ALWAYS" styleClass="table-dark">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="colFecha"      text="Fecha"      prefWidth="100"/>
+                <TableColumn fx:id="colProveedor"  text="Proveedor"  prefWidth="200"/>
+                <TableColumn fx:id="colConcepto"   text="Concepto"   prefWidth="200"/>
+                <TableColumn fx:id="colMonto"      text="Monto"      prefWidth="130"/>
+                <TableColumn fx:id="colEstado"     text="Estado"     prefWidth="100"/>
+                <TableColumn fx:id="colAcciones"   text="Acciones"   prefWidth="100"/>
+            </columns>
+            <placeholder>
+                <Label text="No hay pagos para mostrar" styleClass="table-placeholder"/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+</VBox>

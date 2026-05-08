@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.DashboardController"
+      styleClass="module-container"
+      spacing="20">
+
+    <!-- ── Encabezado ─────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <Label text="Panel general" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="lblFecha" text="" styleClass="label-secondary"/>
+    </HBox>
+
+    <!-- ── Stat cards (4 columnas) ───────────────────────────── -->
+    <GridPane hgap="14" vgap="14">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="stat-card" spacing="6">
+            <Label text="Internos activos" styleClass="stat-label"/>
+            <Label fx:id="lblInternosActivos" text="—" styleClass="stat-value"/>
+            <Label fx:id="lblInternosDelta"   text="Cargando..." styleClass="stat-delta"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="stat-card tone-success" spacing="6">
+            <Label text="Cobranzas del mes" styleClass="stat-label"/>
+            <Label fx:id="lblCobranzasMes"   text="—" styleClass="stat-value"/>
+            <Label fx:id="lblCobranzasDelta" text="" styleClass="stat-delta"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="stat-card tone-danger" spacing="6">
+            <Label text="Pendientes de pago" styleClass="stat-label"/>
+            <Label fx:id="lblPendientes"      text="—" styleClass="stat-value"/>
+            <Label fx:id="lblPendientesDelta" text="" styleClass="stat-delta"/>
+        </VBox>
+
+        <VBox GridPane.columnIndex="3" GridPane.rowIndex="0" styleClass="stat-card tone-info" spacing="6">
+            <Label text="Plazas disponibles" styleClass="stat-label"/>
+            <Label fx:id="lblPlazas"      text="—" styleClass="stat-value"/>
+            <Label fx:id="lblPlazasDelta" text="" styleClass="stat-delta"/>
+        </VBox>
+    </GridPane>
+
+    <!-- ── Dos cards lado a lado ─────────────────────────────── -->
+    <HBox spacing="16" VBox.vgrow="ALWAYS">
+
+        <!-- Cobranzas recientes -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="card" spacing="0">
+            <HBox styleClass="card-head">
+                <Label text="Cobranzas recientes" styleClass="card-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Ver todas" styleClass="btn-link" onAction="#onVerCobranzas"/>
+            </HBox>
+            <VBox fx:id="listCobranzas" spacing="0"/>
+        </VBox>
+
+        <!-- Próximas altas -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="card" spacing="0">
+            <HBox styleClass="card-head">
+                <Label text="Próximas altas previstas" styleClass="card-title"/>
+            </HBox>
+            <VBox fx:id="listAltas" spacing="0"/>
+        </VBox>
+
+    </HBox>
+
+</VBox>

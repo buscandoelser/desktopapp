@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.ReportesController"
+      styleClass="module-container"
+      spacing="24">
+
+    <!-- ── Encabezado ─────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <Label text="Reportes" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+    <Label text="Generá informes financieros y de gestión en formato PDF o Excel"
+           styleClass="label-secondary"/>
+
+    <!-- ── Grid de tarjetas de reportes (3 por fila) ─────────── -->
+    <GridPane hgap="14" vgap="14" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+            <ColumnConstraints percentWidth="33.34" hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <!-- Fila 1 -->
+        <Button GridPane.columnIndex="0" GridPane.rowIndex="0"
+                maxWidth="Infinity" styleClass="report-card"
+                onAction="#onBalanceMensual">
+            <graphic>
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="📊" styleClass="report-card-icon"/>
+                    <VBox spacing="3">
+                        <Label text="Balance mensual" styleClass="report-card-title"/>
+                        <Label text="Ingresos vs egresos por mes" styleClass="report-card-sub"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="→" styleClass="label-secondary"/>
+                </HBox>
+            </graphic>
+        </Button>
+
+        <Button GridPane.columnIndex="1" GridPane.rowIndex="0"
+                maxWidth="Infinity" styleClass="report-card"
+                onAction="#onCuentaCorriente">
+            <graphic>
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="👤" styleClass="report-card-icon"/>
+                    <VBox spacing="3">
+                        <Label text="Cuenta corriente" styleClass="report-card-title"/>
+                        <Label text="Saldos y movimientos por interno" styleClass="report-card-sub"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="→" styleClass="label-secondary"/>
+                </HBox>
+            </graphic>
+        </Button>
+
+        <Button GridPane.columnIndex="2" GridPane.rowIndex="0"
+                maxWidth="Infinity" styleClass="report-card"
+                onAction="#onListadoJudicial">
+            <graphic>
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="⚖" styleClass="report-card-icon"/>
+                    <VBox spacing="3">
+                        <Label text="Listado judicial" styleClass="report-card-title"/>
+                        <Label text="Internos con derivación judicial" styleClass="report-card-sub"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="→" styleClass="label-secondary"/>
+                </HBox>
+            </graphic>
+        </Button>
+
+        <!-- Fila 2 -->
+        <Button GridPane.columnIndex="0" GridPane.rowIndex="1"
+                maxWidth="Infinity" styleClass="report-card"
+                onAction="#onCapacidad">
+            <graphic>
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="📈" styleClass="report-card-icon"/>
+                    <VBox spacing="3">
+                        <Label text="Capacidad histórica" styleClass="report-card-title"/>
+                        <Label text="Ocupación mensual del último año" styleClass="report-card-sub"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="→" styleClass="label-secondary"/>
+                </HBox>
+            </graphic>
+        </Button>
+
+        <Button GridPane.columnIndex="1" GridPane.rowIndex="1"
+                maxWidth="Infinity" styleClass="report-card"
+                onAction="#onObrasSociales">
+            <graphic>
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="🏥" styleClass="report-card-icon"/>
+                    <VBox spacing="3">
+                        <Label text="Cobros por O. Social" styleClass="report-card-title"/>
+                        <Label text="Resumen por convenio" styleClass="report-card-sub"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="→" styleClass="label-secondary"/>
+                </HBox>
+            </graphic>
+        </Button>
+
+        <Button GridPane.columnIndex="2" GridPane.rowIndex="1"
+                maxWidth="Infinity" styleClass="report-card"
+                onAction="#onPagosProveedores">
+            <graphic>
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="💳" styleClass="report-card-icon"/>
+                    <VBox spacing="3">
+                        <Label text="Pagos a proveedores" styleClass="report-card-title"/>
+                        <Label text="Egresos por categoría" styleClass="report-card-sub"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="→" styleClass="label-secondary"/>
+                </HBox>
+            </graphic>
+        </Button>
+
+    </GridPane>
+
+</VBox>
