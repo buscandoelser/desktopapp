@@ -1,8 +1,17 @@
 package com.gestion.config;
 
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
+
+import java.util.concurrent.TimeUnit;
 
 public final class AppConfig {
+
+    public static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build();
 
     // URL base de la API — sobreescribible con variable de entorno
     public static final String API_BASE_URL =

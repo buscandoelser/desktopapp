@@ -1,6 +1,9 @@
 package com.gestion.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.gestion.services.CobranzasService;
 import com.gestion.services.InternoService;
+import com.gestion.services.ReportesService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -11,6 +14,7 @@ import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
@@ -28,7 +32,6 @@ public class DashboardController {
     @FXML private VBox  listCobranzas;
     @FXML private VBox  listAltas;
 
-    // Referencia al MainController para navegación entre secciones
     private MainController mainController;
 
     public void setMainController(MainController mainController) {
@@ -41,16 +44,10 @@ public class DashboardController {
         lblFecha.setText("Hoy, " + LocalDate.now().format(fmt));
 
         cargarInternosActivos();
-        poblarCobranzasRecientes();
-        poblarProximasAltas();
-
-        // Pendiente hasta que exista CobranzasService
-        lblCobranzasMes.setText("—");
-        lblCobranzasDelta.setText("Módulo en desarrollo");
-        lblPendientes.setText("—");
-        lblPendientesDelta.setText("");
-        lblPlazas.setText("—");
-        lblPlazasDelta.setText("Pendiente config.");
+        cargarIngresosMes();
+        cargarDeudaTotal();
+        cargarCuotasRecientes();
+        cargarProximasAltas();
     }
 
     private void cargarInternosActivos() {
@@ -62,24 +59,81 @@ public class DashboardController {
                     lblInternosDelta.setText("activos en tratamiento");
                 } else {
                     lblInternosActivos.setText("—");
-                    lblInternosDelta.setText("Sin conexión al servidor");
+                    lblInternosDelta.setText("Sin conexión");
                 }
             }, Platform::runLater);
     }
 
-    private void poblarCobranzasRecientes() {
-        // Demo — reemplazar con CobranzasService cuando esté disponible
-        Object[][] filas = {
-            { "07/05", "Cristian Ramírez",  "Cuota mayo",    "$285.000", "Cobrado"   },
-            { "06/05", "Mariano Ferreyra",  "Coseguro O.S.", "$42.000",  "Cobrado"   },
-            { "05/05", "Lucía Domínguez",   "Cuota mayo",    "$285.000", "Pendiente" },
-            { "04/05", "Daniela Ríos",      "Cuota mayo",    "$220.000", "Cobrado"   },
-        };
-        for (Object[] f : filas) {
-            listCobranzas.getChildren().add(
-                filaCobranza((String)f[0], (String)f[1], (String)f[2], (String)f[3], (String)f[4])
-            );
-        }
+    private void cargarIngresosMes() {
+        LocalDate hoy = LocalDate.now();
+        CompletableFuture
+            .supplyAsync(() -> ReportesService.ingresosMes(hoy.getYear(), hoy.getMonthValue()))
+            .thenAcceptAsync(result -> {
+                if (result.success && result.data != null) {
+                    JsonNode data = result.data;
+                    String total = data.has("total_general") ? "$" + data.get("total_general").asText() : "—";
+                    lblCobranzasMes.setText(total);
+                    lblCobranzasDelta.setText("ingresos " + hoy.getMonth().getDisplayName(
+                            java.time.format.TextStyle.FULL, Locale.of("es", "AR")));
+                } else {
+                    lblCobranzasMes.setText("—");
+                    lblCobranzasDelta.setText("Sin datos");
+                }
+            }, Platform::runLater);
+    }
+
+    private void cargarDeudaTotal() {
+        CompletableFuture
+            .supplyAsync(ReportesService::deudaTotal)
+            .thenAcceptAsync(result -> {
+                if (result.success && result.data != null) {
+                    JsonNode data = result.data;
+                    lblPendientes.setText(data.has("cantidad_deudores") ? data.get("cantidad_deudores").asText() : "—");
+                    lblPendientesDelta.setText("internos con deuda");
+                    String deuda = data.has("deuda_total") ? "$" + data.get("deuda_total").asText() : "—";
+                    lblPlazas.setText(deuda);
+                    lblPlazasDelta.setText("deuda total acumulada");
+                } else {
+                    lblPendientes.setText("—");
+                    lblPendientesDelta.setText("Sin datos");
+                    lblPlazas.setText("—");
+                    lblPlazasDelta.setText("");
+                }
+            }, Platform::runLater);
+    }
+
+    private void cargarCuotasRecientes() {
+        LocalDate hoy = LocalDate.now();
+        CompletableFuture
+            .supplyAsync(() -> CobranzasService.listarCuotas(null, hoy.getYear(), hoy.getMonthValue(), 1))
+            .thenAcceptAsync(result -> {
+                listCobranzas.getChildren().clear();
+                if (!result.success || result.data == null) return;
+
+                result.data.stream().limit(4).forEach(cuota -> {
+                    String fecha  = cuota.getFechaVencimiento() != null
+                            ? cuota.getFechaVencimiento().substring(5).replace("-", "/") : "—";
+                    String nombre = cuota.getInternoNombre() != null ? cuota.getInternoNombre() : "—";
+                    String monto  = "$" + cuota.getMontoOriginal();
+                    String estado = cuota.getEstadoDisplay();
+                    listCobranzas.getChildren().add(filaCobranza(fecha, nombre, cuota.getMesPeriodo(), monto, estado));
+                });
+            }, Platform::runLater);
+    }
+
+    private void cargarProximasAltas() {
+        CompletableFuture
+            .supplyAsync(() -> InternoService.listar("alta", null, 1))
+            .thenAcceptAsync(result -> {
+                listAltas.getChildren().clear();
+                if (!result.success || result.data == null) return;
+
+                result.data.stream().limit(3).forEach(i -> {
+                    String fecha = i.getFechaEgreso() != null && i.getFechaEgreso().length() >= 10
+                            ? i.getFechaEgreso().substring(5, 10).replace("-", "/") : "—";
+                    listAltas.getChildren().add(filaAlta(fecha, i.getNombreCompleto(), i.getMotivoEgreso() != null ? i.getMotivoEgreso() : "Alta médica"));
+                });
+            }, Platform::runLater);
     }
 
     private HBox filaCobranza(String fecha, String nombre, String concepto, String monto, String estado) {
@@ -93,33 +147,20 @@ public class DashboardController {
 
         VBox main = new VBox(2);
         HBox.setHgrow(main, Priority.ALWAYS);
-        Label lNombre  = new Label(nombre);  lNombre.getStyleClass().add("mini-title");
-        Label lSub     = new Label(concepto); lSub.getStyleClass().add("mini-sub");
+        Label lNombre = new Label(nombre);   lNombre.getStyleClass().add("mini-title");
+        Label lSub    = new Label(concepto); lSub.getStyleClass().add("mini-sub");
         main.getChildren().addAll(lNombre, lSub);
 
-        Label lMonto = new Label(monto);
-        lMonto.getStyleClass().add("mini-amt");
-
+        Label lMonto  = new Label(monto);  lMonto.getStyleClass().add("mini-amt");
         Label lEstado = new Label(estado);
         lEstado.getStyleClass().add(switch (estado) {
-            case "Cobrado"   -> "estado-activo";
-            case "Pendiente" -> "estado-permiso";
-            default          -> "estado-baja";
+            case "Pagada"   -> "estado-activo";
+            case "Parcial"  -> "estado-permiso";
+            default         -> "estado-baja";
         });
 
         row.getChildren().addAll(lFecha, main, lMonto, lEstado);
         return row;
-    }
-
-    private void poblarProximasAltas() {
-        Object[][] filas = {
-            { "12/05", "Romina Barrios",  "Alta médica"      },
-            { "14/05", "Camilo Espinosa", "Fin tratamiento"  },
-            { "18/05", "Soledad Ibarra",  "Derivación"       },
-        };
-        for (Object[] f : filas) {
-            listAltas.getChildren().add(filaAlta((String)f[0], (String)f[1], (String)f[2]));
-        }
     }
 
     private HBox filaAlta(String fecha, String nombre, String motivo) {
@@ -143,8 +184,6 @@ public class DashboardController {
 
     @FXML
     private void onVerCobranzas() {
-        if (mainController != null) {
-            mainController.navegarACobranzas();
-        }
+        if (mainController != null) mainController.navegarACobranzas();
     }
 }

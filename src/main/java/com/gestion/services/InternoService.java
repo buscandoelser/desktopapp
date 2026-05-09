@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class InternoService {
 
-    private static final OkHttpClient client   = new OkHttpClient();
+    private static final OkHttpClient client   = AppConfig.HTTP_CLIENT;
     private static final ObjectMapper mapper   = new ObjectMapper();
     private static final MediaType    JSON_TYPE = MediaType.get("application/json; charset=utf-8");
 
