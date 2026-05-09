@@ -9,7 +9,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +45,7 @@ public class CobranzasController {
     @FXML private TableColumn<Cuota, String>    colMonto;
     @FXML private TableColumn<Cuota, String>    colMetodo;
     @FXML private TableColumn<Cuota, String>    colEstado;
+    @FXML private TableColumn<Cuota, Void>      colAcciones;
 
     private final ObservableList<Cuota> datos = FXCollections.observableArrayList();
 
@@ -90,6 +96,31 @@ public class CobranzasController {
                 else if ("Parcial".equals(item))  color = "-fx-text-fill: #facc15;";
                 else                              color = "-fx-text-fill: #94a3b8;";
                 setStyle(color);
+            }
+        });
+
+        boolean puedePagar = AppConfig.tieneRol("admin", "operador", "contador");
+        colAcciones.setCellFactory(tc -> new TableCell<>() {
+            private final Button btnPagar = new Button("Pagar");
+            {
+                btnPagar.getStyleClass().add("btn-sm-success");
+                btnPagar.setOnAction(e -> {
+                    Cuota c = getTableView().getItems().get(getIndex());
+                    abrirModal(c);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) { setGraphic(null); return; }
+                Cuota c = getTableView().getItems().get(getIndex());
+                boolean pagable = "pendiente".equals(c.getEstado())
+                               || "parcial".equals(c.getEstado())
+                               || "con_mora".equals(c.getEstado());
+                HBox box = new HBox();
+                if (puedePagar && pagable) box.getChildren().add(btnPagar);
+                setGraphic(box);
             }
         });
     }
@@ -143,11 +174,40 @@ public class CobranzasController {
     }
 
     @FXML private void onRegistrar() {
-        AlertHelper.info("Registro de cobros disponible próximamente.");
+        abrirModal(null);
     }
 
     @FXML private void onExportar() {
         AlertHelper.info("Exportación CSV disponible próximamente.");
+    }
+
+    private void abrirModal(Cuota cuota) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/RegistrarCobroModal.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            RegistrarCobroModalController ctrl = loader.getController();
+            ctrl.setOnExito(this::cargarDatos);
+            if (cuota != null) ctrl.setCuotaPreseleccionada(cuota);
+
+            Stage modal = new Stage();
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.initOwner(AppConfig.getPrimaryStage());
+            modal.setTitle("Registrar cobro");
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/css/dark-futuristic.css").toExternalForm());
+            modal.setScene(scene);
+            modal.setMinWidth(560);
+            modal.setMinHeight(620);
+            modal.centerOnScreen();
+            modal.showAndWait();
+
+        } catch (Exception e) {
+            AlertHelper.error("Error al abrir ventana de cobro: " + e.getMessage());
+        }
     }
 
     private void setLoading(boolean loading) {

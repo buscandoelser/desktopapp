@@ -7,11 +7,13 @@ com\gestion\App.class
 com\gestion\controllers\LoginController.class
 com\gestion\models\Cuota.class
 com\gestion\services\ReportesService.class
+com\gestion\controllers\RegistrarCobroModalController.class
 com\gestion\config\AppConfig.class
 com\gestion\services\InternoService.class
 com\gestion\utils\FormatHelper.class
 com\gestion\services\CobranzasService.class
 com\gestion\controllers\DashboardController.class
+com\gestion\controllers\CobranzasController$2.class
 com\gestion\services\AuthService.class
 com\gestion\controllers\InternosController$2.class
 com\gestion\controllers\InternoFormController.class
@@ -22,6 +24,7 @@ com\gestion\utils\AlertHelper$TipoToast.class
 com\gestion\services\AuthService$LoginResult.class
 com\gestion\controllers\PagosController.class
 com\gestion\models\Interno.class
+com\gestion\controllers\RegistrarCobroModalController$1.class
 com\gestion\controllers\BajaModalController.class
 com\gestion\controllers\CobranzasController$1.class
 com\gestion\models\ContactoFamiliar.class

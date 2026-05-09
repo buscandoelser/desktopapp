@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.RegistrarCobroModalController"
+      styleClass="root-dark,form-container"
+      spacing="0"
+      prefWidth="580"
+      prefHeight="660">
+
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <HBox styleClass="wizard-header" alignment="CENTER_LEFT" spacing="14">
+        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+        <VBox spacing="3">
+            <Label text="Registrar cobro" styleClass="wizard-step-title"/>
+            <Label fx:id="lblSubtitulo"
+                   text="Seleccioná el interno y completá los datos del pago"
+                   styleClass="label-secondary"/>
+        </VBox>
+    </HBox>
+
+    <Separator/>
+
+    <!-- ── Tabs ────────────────────────────────────────────────── -->
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <!-- ── Tab 1: Registrar Pago ───────────────────────────── -->
+        <Tab text="Registrar Pago">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                        styleClass="scroll-dark" VBox.vgrow="ALWAYS">
+                <VBox spacing="18">
+                    <padding><Insets top="24" right="24" bottom="28" left="24"/></padding>
+
+                    <!-- Interno -->
+                    <VBox spacing="6">
+                        <Label text="INTERNO *" styleClass="input-label"/>
+                        <ComboBox fx:id="cmbInterno" maxWidth="Infinity"
+                                  promptText="Seleccionar interno activo..."
+                                  styleClass="combo-field"
+                                  onAction="#onInternoSeleccionado"/>
+                    </VBox>
+
+                    <!-- Cuota info (oculta hasta seleccionar interno) -->
+                    <VBox fx:id="panelCuota" spacing="0" visible="false" managed="false"
+                          styleClass="card">
+                        <padding><Insets top="14" right="16" bottom="14" left="16"/></padding>
+                        <HBox spacing="28" alignment="CENTER_LEFT">
+                            <VBox spacing="3">
+                                <Label text="Período" styleClass="stat-label"/>
+                                <Label fx:id="lblPeriodo" text="—"
+                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#e2e8f0;"/>
+                            </VBox>
+                            <VBox spacing="3">
+                                <Label text="Monto original" styleClass="stat-label"/>
+                                <Label fx:id="lblMontoOriginal" text="—"
+                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#e2e8f0;"/>
+                            </VBox>
+                            <VBox spacing="3">
+                                <Label text="Saldo pendiente" styleClass="stat-label"/>
+                                <Label fx:id="lblSaldo" text="—"
+                                       style="-fx-font-size:14px; -fx-font-weight:700; -fx-text-fill:#facc15;"/>
+                            </VBox>
+                            <VBox spacing="3">
+                                <Label text="Estado" styleClass="stat-label"/>
+                                <Label fx:id="lblEstadoCuota" text="—"
+                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#94a3b8;"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Sin cuota pendiente -->
+                    <Label fx:id="lblSinCuota"
+                           text="Este interno no tiene cuotas pendientes de pago."
+                           styleClass="label-secondary" visible="false" managed="false"/>
+
+                    <!-- Monto + Medio de pago -->
+                    <HBox spacing="16">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="MONTO A PAGAR *" styleClass="input-label"/>
+                            <TextField fx:id="txtMonto" promptText="0.00"
+                                       styleClass="input-field"/>
+                        </VBox>
+                        <VBox spacing="6" prefWidth="200">
+                            <Label text="MEDIO DE PAGO *" styleClass="input-label"/>
+                            <ComboBox fx:id="cmbMedio" maxWidth="Infinity" styleClass="combo-field"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Fecha de pago -->
+                    <VBox spacing="6">
+                        <Label text="FECHA DE PAGO *" styleClass="input-label"/>
+                        <DatePicker fx:id="dpFechaPago" maxWidth="Infinity"
+                                    styleClass="combo-field"/>
+                    </VBox>
+
+                    <!-- Observación -->
+                    <VBox spacing="6">
+                        <Label text="OBSERVACIÓN" styleClass="input-label"/>
+                        <TextArea fx:id="txtObservacion"
+                                  promptText="Notas adicionales (opcional)"
+                                  prefRowCount="3"
+                                  wrapText="true"
+                                  styleClass="input-field"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- ── Tab 2: Generar Cuotas del Mes (solo admin) ──────── -->
+        <Tab fx:id="tabGenerar" text="Generar Mes">
+            <VBox spacing="18">
+                <padding><Insets top="24" right="24" bottom="28" left="24"/></padding>
+
+                <HBox styleClass="warn-box" alignment="TOP_LEFT" spacing="0">
+                    <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                    <Label text="Genera las cuotas del período indicado para todos los internos activos. Los períodos que ya existen se omiten automáticamente."
+                           styleClass="warn-box-text" wrapText="true" HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <HBox spacing="16">
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="AÑO *" styleClass="input-label"/>
+                        <ComboBox fx:id="cmbAnio" maxWidth="Infinity" styleClass="combo-field"/>
+                    </VBox>
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="MES *" styleClass="input-label"/>
+                        <ComboBox fx:id="cmbMesGenerar" maxWidth="Infinity" styleClass="combo-field"/>
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="6">
+                    <Label text="INTERNO (vacío = todos los activos)" styleClass="input-label"/>
+                    <ComboBox fx:id="cmbInternoGenerar" maxWidth="Infinity"
+                              promptText="Todos los internos activos"
+                              styleClass="combo-field"/>
+                </VBox>
+
+                <Label fx:id="lblResultadoGenerar" text="" styleClass="label-secondary"
+                       wrapText="true"/>
+            </VBox>
+        </Tab>
+
+    </TabPane>
+
+    <Separator/>
+
+    <!-- ── Footer ──────────────────────────────────────────────── -->
+    <HBox styleClass="wizard-footer" alignment="CENTER_RIGHT" spacing="12">
+        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+        <Button text="CANCELAR" onAction="#onCancelar" styleClass="btn-ghost"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ProgressIndicator fx:id="progressIndicator" prefWidth="28" prefHeight="28"
+                           styleClass="progress-acento" visible="false"/>
+        <Button fx:id="btnConfirmar" text="REGISTRAR COBRO" onAction="#onConfirmar"
+                styleClass="btn-primary"/>
+    </HBox>
+
+</VBox>
