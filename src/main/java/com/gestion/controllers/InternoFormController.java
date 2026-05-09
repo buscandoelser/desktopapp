@@ -65,7 +65,8 @@ public class InternoFormController {
     private int    pasoActual = 1;
     private Interno internoEditando;
     private Runnable onGuardado;
-    private boolean modoEdicion = false;
+    private boolean modoEdicion   = false;
+    private boolean modoSoloLectura = false;
     private final List<HBox> filasContacto = new ArrayList<>();
 
     @FXML
@@ -117,8 +118,9 @@ public class InternoFormController {
     }
 
     // ── API pública ───────────────────────────────────────────
-    public void setInterno(Interno interno) {
-        this.internoEditando = interno;
+    public void setInterno(Interno interno, boolean soloLectura) {
+        this.internoEditando   = interno;
+        this.modoSoloLectura   = soloLectura;
         if (interno != null) {
             modoEdicion = true;
             rellenarFormulario(interno);
@@ -152,23 +154,23 @@ public class InternoFormController {
             } catch (Exception ignored) {}
         }
 
-        txtDireccion.setText(i.getDireccion());
+        txtDireccion.setText(safe(i.getDireccion()));
         chkHijos.setSelected(i.isTieneHijos());
         spnCantHijos.getValueFactory().setValue(i.getCantidadHijos());
         chkJudicializado.setSelected(i.isEsJudicializado());
 
         chkInternadoAntes.setSelected(i.isEstuvoInternadoAntes());
-        txtLugarAnterior.setText(i.getLugarInternacionAnterior());
+        txtLugarAnterior.setText(safe(i.getLugarInternacionAnterior()));
         chkMedicacion.setSelected(i.isTomaMedicacion());
-        txtDetalleMedicacion.setText(i.getDetalleMedicacion());
+        txtDetalleMedicacion.setText(safe(i.getDetalleMedicacion()));
         chkPatologia.setSelected(i.isTienePatologia());
-        txtDetallePatologia.setText(i.getDetallePatologia());
+        txtDetallePatologia.setText(safe(i.getDetallePatologia()));
         if (i.getNivelEstudios() != null) cmbNivelEstudios.setValue(i.getNivelEstudios());
 
         chkObraSocial.setSelected(i.isTieneObraSocial());
-        txtObraSocial.setText(i.getNombreObraSocial());
+        txtObraSocial.setText(safe(i.getNombreObraSocial()));
         chkPension.setSelected(i.isCobraPension());
-        txtTipoPension.setText(i.getTipoPension());
+        txtTipoPension.setText(safe(i.getTipoPension()));
         if (i.getTipoPagoClasificacion() != null) cmbTipoPago.setValue(i.getTipoPagoClasificacion());
 
         // Cargar contactos
@@ -185,9 +187,10 @@ public class InternoFormController {
             }
         }
 
-        // Bloquear campos si no tiene permisos
-        boolean soloLectura = !AppConfig.tieneRol("admin", "operador");
-        setFormReadOnly(soloLectura);
+        // Bloquear si es vista de detalle o si el rol no permite editar
+        setFormReadOnly(modoSoloLectura || !AppConfig.tieneRol("admin", "operador"));
+        // fecha_ingreso no se puede modificar una vez creado el legajo
+        if (modoEdicion) dpFechaIngreso.setDisable(true);
     }
 
     private void setFormReadOnly(boolean readOnly) {
@@ -196,8 +199,25 @@ public class InternoFormController {
         txtDni.setEditable(!readOnly);
         dpFechaNacimiento.setDisable(readOnly);
         dpFechaIngreso.setDisable(readOnly);
-        btnGuardar.setVisible(!readOnly);
-        btnGuardar.setManaged(!readOnly);
+        chkHijos.setDisable(readOnly);
+        spnCantHijos.setDisable(readOnly || !chkHijos.isSelected());
+        chkJudicializado.setDisable(readOnly);
+        chkInternadoAntes.setDisable(readOnly);
+        txtLugarAnterior.setDisable(readOnly || !chkInternadoAntes.isSelected());
+        chkMedicacion.setDisable(readOnly);
+        txtDetalleMedicacion.setDisable(readOnly || !chkMedicacion.isSelected());
+        chkPatologia.setDisable(readOnly);
+        txtDetallePatologia.setDisable(readOnly || !chkPatologia.isSelected());
+        cmbNivelEstudios.setDisable(readOnly);
+        chkObraSocial.setDisable(readOnly);
+        txtObraSocial.setDisable(readOnly || !chkObraSocial.isSelected());
+        chkPension.setDisable(readOnly);
+        txtTipoPension.setDisable(readOnly || !chkPension.isSelected());
+        cmbTipoPago.setDisable(readOnly);
+        txtDireccion.setEditable(!readOnly);
+        btnAgregarContacto.setVisible(!readOnly);
+        btnAgregarContacto.setManaged(!readOnly);
+        // El botón Guardar lo controla irAPaso; no lo tocamos aquí
     }
 
     // ── Wizard: navegación ────────────────────────────────────
@@ -217,8 +237,9 @@ public class InternoFormController {
         btnAnterior.setDisable(paso == 1);
         btnSiguiente.setVisible(paso < 3);
         btnSiguiente.setManaged(paso < 3);
-        btnGuardar.setVisible(paso == 3);
-        btnGuardar.setManaged(paso == 3);
+        boolean mostrarGuardar = (paso == 3) && !modoSoloLectura;
+        btnGuardar.setVisible(mostrarGuardar);
+        btnGuardar.setManaged(mostrarGuardar);
 
         lblTituloPaso.setText(switch (paso) {
             case 1 -> "Paso 1 de 3 — Datos Personales";
@@ -364,7 +385,9 @@ public class InternoFormController {
         m.put("apellido",   txtApellido.getText().trim());
         m.put("dni",        txtDni.getText().trim());
         m.put("fecha_nacimiento", FormatHelper.localDateAIso(dpFechaNacimiento.getValue()));
-        m.put("fecha_ingreso",    FormatHelper.localDateAIso(dpFechaIngreso.getValue()));
+        if (!modoEdicion) {
+            m.put("fecha_ingreso", FormatHelper.localDateAIso(dpFechaIngreso.getValue()));
+        }
         m.put("edad", FormatHelper.calcularEdad(FormatHelper.localDateAIso(dpFechaNacimiento.getValue())));
         m.put("direccion",   txtDireccion.getText().trim());
         m.put("tiene_hijos", chkHijos.isSelected());
@@ -394,12 +417,13 @@ public class InternoFormController {
             CheckBox  chR = (CheckBox)  fila.getChildren().stream()
                     .filter(n -> n instanceof CheckBox).findFirst().orElse(null);
 
-            if (tfN != null && !tfN.getText().trim().isEmpty()
-                    && tfT != null && !tfT.getText().trim().isEmpty()) {
+            String textN = tfN != null ? safe(tfN.getText()) : "";
+            String textT = tfT != null ? safe(tfT.getText()) : "";
+            if (!textN.trim().isEmpty() && !textT.trim().isEmpty()) {
                 Map<String, Object> c = new LinkedHashMap<>();
-                c.put("nombre",       tfN.getText().trim());
-                c.put("telefono",     tfT.getText().trim());
-                c.put("vinculo",      tfV != null ? tfV.getText().trim() : "");
+                c.put("nombre",       textN.trim());
+                c.put("telefono",     textT.trim());
+                c.put("vinculo",      tfV != null ? safe(tfV.getText()).trim() : "");
                 c.put("es_referente", chR != null && chR.isSelected());
                 contactos.add(c);
             }
@@ -416,5 +440,9 @@ public class InternoFormController {
     private void cerrarVentana() {
         Stage stage = (Stage) btnGuardar.getScene().getWindow();
         stage.close();
+    }
+
+    private static String safe(String s) {
+        return s != null ? s : "";
     }
 }

@@ -98,11 +98,11 @@ public class InternosController {
 
                 btnVer.setOnAction(e -> {
                     Interno i = getTableView().getItems().get(getIndex());
-                    abrirDetalle(i);
+                    cargarDetalleYAbrir(i, true);
                 });
                 btnEditar.setOnAction(e -> {
                     Interno i = getTableView().getItems().get(getIndex());
-                    abrirFormulario(i);
+                    cargarDetalleYAbrir(i, false);
                 });
                 btnBaja.setOnAction(e -> {
                     Interno i = getTableView().getItems().get(getIndex());
@@ -136,10 +136,10 @@ public class InternosController {
 
         tablaInternos.setItems(datos);
 
-        // Doble click → detalle
+        // Doble click → detalle (solo lectura)
         tablaInternos.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2 && tablaInternos.getSelectionModel().getSelectedItem() != null) {
-                abrirDetalle(tablaInternos.getSelectionModel().getSelectedItem());
+                cargarDetalleYAbrir(tablaInternos.getSelectionModel().getSelectedItem(), true);
             }
         });
     }
@@ -180,7 +180,7 @@ public class InternosController {
     // ── Acciones ──────────────────────────────────────────────
     @FXML
     private void onNuevoInterno() {
-        abrirFormulario(null);
+        abrirFormulario(null, false);
     }
 
     @FXML
@@ -189,19 +189,31 @@ public class InternosController {
         cargarDatos();
     }
 
-    private void abrirFormulario(Interno interno) {
+    private void cargarDetalleYAbrir(Interno interno, boolean soloLectura) {
+        CompletableFuture
+            .supplyAsync(() -> InternoService.obtener(interno.getId()))
+            .thenAcceptAsync(result -> {
+                if (result.success) {
+                    abrirFormulario(result.data, soloLectura);
+                } else {
+                    AlertHelper.error("Error al cargar detalle: " + result.errorMensaje);
+                }
+            }, Platform::runLater);
+    }
+
+    private void abrirFormulario(Interno interno, boolean soloLectura) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InternoForm.fxml"));
             javafx.scene.Parent root = loader.load();
 
             InternoFormController ctrl = loader.getController();
-            ctrl.setInterno(interno);
+            ctrl.setInterno(interno, soloLectura);
             ctrl.setOnGuardado(this::cargarDatos);
 
             Stage modal = new Stage();
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.initOwner(AppConfig.getPrimaryStage());
-            modal.setTitle(interno == null ? "Nuevo Interno" : "Editar Interno");
+            modal.setTitle(interno == null ? "Nuevo Interno" : soloLectura ? "Detalle de Interno" : "Editar Interno");
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add(
@@ -216,19 +228,6 @@ public class InternosController {
         } catch (Exception e) {
             AlertHelper.error("Error al abrir formulario: " + e.getMessage());
         }
-    }
-
-    private void abrirDetalle(Interno interno) {
-        // Cargar detalle completo y abrir formulario en modo lectura
-        CompletableFuture
-            .supplyAsync(() -> InternoService.obtener(interno.getId()))
-            .thenAcceptAsync(result -> {
-                if (result.success) {
-                    abrirFormulario(result.data);
-                } else {
-                    AlertHelper.error("Error al cargar detalle: " + result.errorMensaje);
-                }
-            }, Platform::runLater);
     }
 
     private void darDeBaja(Interno interno) {
