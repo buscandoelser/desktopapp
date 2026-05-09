@@ -77,7 +77,8 @@ public class PagosController {
                     String filtro = txtBusqueda.getText().trim().toLowerCase();
                     egresos = egresos.stream()
                             .filter(e -> e.getDescripcion().toLowerCase().contains(filtro)
-                                      || e.getCategoria().toLowerCase().contains(filtro))
+                                      || e.getCategoria().toLowerCase().contains(filtro)
+                                      || e.getRegistradoPor().toLowerCase().contains(filtro))
                             .toList();
                 }
 

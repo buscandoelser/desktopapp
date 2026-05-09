@@ -26,17 +26,17 @@ public class Cuota {
     public int    getInternoId()           { return internoId; }
     public int    getAnio()                { return anio; }
     public int    getMes()                 { return mes; }
-    public String getMontoOriginal()       { return montoOriginal; }
-    public String getMontoPagado()         { return montoPagado; }
-    public String getMontoInteres()        { return montoInteres; }
-    public String getDescuento()           { return descuento; }
-    public String getDescripcionDescuento(){ return descripcionDescuento; }
-    public String getEstado()              { return estado; }
-    public String getFechaVencimiento()    { return fechaVencimiento; }
-    public String getFechaPagoCompleto()   { return fechaPagoCompleto; }
-    public String getSaldoPendiente()      { return saldoPendiente; }
-    public String getInternoNombre()       { return internoNombre; }
-    public String getLegajo()              { return legajo; }
+    public String getMontoOriginal()       { return montoOriginal       != null ? montoOriginal       : "0"; }
+    public String getMontoPagado()         { return montoPagado         != null ? montoPagado         : "0"; }
+    public String getMontoInteres()        { return montoInteres        != null ? montoInteres        : "0"; }
+    public String getDescuento()           { return descuento           != null ? descuento           : "0"; }
+    public String getDescripcionDescuento(){ return descripcionDescuento != null ? descripcionDescuento : ""; }
+    public String getEstado()              { return estado              != null ? estado              : "pendiente"; }
+    public String getFechaVencimiento()    { return fechaVencimiento    != null ? fechaVencimiento    : "—"; }
+    public String getFechaPagoCompleto()   { return fechaPagoCompleto   != null ? fechaPagoCompleto   : "—"; }
+    public String getSaldoPendiente()      { return saldoPendiente      != null ? saldoPendiente      : "0"; }
+    public String getInternoNombre()       { return internoNombre       != null ? internoNombre       : "—"; }
+    public String getLegajo()              { return legajo              != null ? legajo              : "—"; }
 
     public String getMesPeriodo() {
         String[] meses = { "", "Ene", "Feb", "Mar", "Abr", "May", "Jun",

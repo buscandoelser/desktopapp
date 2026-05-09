@@ -16,11 +16,11 @@ public class Egreso {
     @JsonProperty("registrado_por")  private String registradoPor;
 
     public int    getId()             { return id; }
-    public String getDescripcion()    { return descripcion; }
-    public String getMonto()          { return monto; }
-    public String getCategoria()      { return categoria != null ? categoria : "—"; }
-    public String getMedioPago()      { return medioPago; }
-    public String getFecha()          { return fecha; }
-    public String getCreatedAt()      { return createdAt; }
-    public String getRegistradoPor()  { return registradoPor; }
+    public String getDescripcion()    { return descripcion    != null ? descripcion    : "—"; }
+    public String getMonto()          { return monto          != null ? monto          : "0"; }
+    public String getCategoria()      { return categoria      != null ? categoria      : "—"; }
+    public String getMedioPago()      { return medioPago      != null ? medioPago      : "—"; }
+    public String getFecha()          { return fecha          != null ? fecha          : "—"; }
+    public String getCreatedAt()      { return createdAt      != null ? createdAt      : "—"; }
+    public String getRegistradoPor()  { return registradoPor  != null ? registradoPor  : "—"; }
 }

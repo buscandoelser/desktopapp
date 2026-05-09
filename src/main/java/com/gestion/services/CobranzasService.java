@@ -41,11 +41,16 @@ public class CobranzasService {
                 JsonNode node = mapper.readTree(body);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
 
+                JsonNode datosNode = node.get("datos");
+                if (datosNode == null || !datosNode.isArray())
+                    return ServiceResult.error("Respuesta inesperada del servidor");
+
                 List<Cuota> lista = new ArrayList<>();
-                for (JsonNode item : node.get("datos")) lista.add(mapper.treeToValue(item, Cuota.class));
-                return ServiceResult.success(lista, node.get("total").asInt());
+                for (JsonNode item : datosNode) lista.add(mapper.treeToValue(item, Cuota.class));
+                int total = node.has("total") ? node.get("total").asInt() : lista.size();
+                return ServiceResult.success(lista, total);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             return ServiceResult.error("Error de conexión: " + e.getMessage());
         }
     }
@@ -121,11 +126,16 @@ public class CobranzasService {
                 JsonNode node = mapper.readTree(body);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
 
+                JsonNode datosNode = node.get("datos");
+                if (datosNode == null || !datosNode.isArray())
+                    return ServiceResult.error("Respuesta inesperada del servidor");
+
                 List<Egreso> lista = new ArrayList<>();
-                for (JsonNode item : node.get("datos")) lista.add(mapper.treeToValue(item, Egreso.class));
-                return ServiceResult.success(lista, node.get("total").asInt());
+                for (JsonNode item : datosNode) lista.add(mapper.treeToValue(item, Egreso.class));
+                int total = node.has("total") ? node.get("total").asInt() : lista.size();
+                return ServiceResult.success(lista, total);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             return ServiceResult.error("Error de conexión: " + e.getMessage());
         }
     }

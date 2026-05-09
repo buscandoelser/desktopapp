@@ -19,7 +19,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class InternosController {
@@ -88,13 +87,15 @@ public class InternosController {
 
         // Columna de acciones
         colAcciones.setCellFactory(tc -> new TableCell<>() {
-            private final Button btnVer    = new Button("Ver");
-            private final Button btnEditar = new Button("Editar");
-            private final Button btnBaja   = new Button("Baja");
+            private final Button btnVer       = new Button("Ver");
+            private final Button btnEditar    = new Button("Editar");
+            private final Button btnBaja      = new Button("Baja");
+            private final Button btnReactivar = new Button("Reactivar");
             {
                 btnVer.getStyleClass().add("btn-sm-info");
                 btnEditar.getStyleClass().add("btn-sm-warning");
                 btnBaja.getStyleClass().add("btn-sm-danger");
+                btnReactivar.getStyleClass().add("btn-sm-success");
 
                 btnVer.setOnAction(e -> {
                     Interno i = getTableView().getItems().get(getIndex());
@@ -108,6 +109,10 @@ public class InternosController {
                     Interno i = getTableView().getItems().get(getIndex());
                     darDeBaja(i);
                 });
+                btnReactivar.setOnAction(e -> {
+                    Interno i = getTableView().getItems().get(getIndex());
+                    reactivar(i);
+                });
             }
 
             @Override
@@ -116,18 +121,20 @@ public class InternosController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    Interno interno = getTableView().getItems().get(getIndex());
-                    boolean activo  = "activo".equals(interno.getEstado());
+                    Interno interno     = getTableView().getItems().get(getIndex());
+                    boolean activo      = "activo".equals(interno.getEstado());
                     boolean puedeEditar = AppConfig.tieneRol("admin", "operador");
 
                     btnEditar.setVisible(activo && puedeEditar);
                     btnEditar.setManaged(activo && puedeEditar);
                     btnBaja.setVisible(activo && puedeEditar);
                     btnBaja.setManaged(activo && puedeEditar);
+                    btnReactivar.setVisible(!activo && puedeEditar);
+                    btnReactivar.setManaged(!activo && puedeEditar);
 
                     HBox box = new HBox(4, btnVer);
                     if (puedeEditar) {
-                        box.getChildren().addAll(btnEditar, btnBaja);
+                        box.getChildren().addAll(btnEditar, btnBaja, btnReactivar);
                     }
                     setGraphic(box);
                 }
@@ -231,68 +238,59 @@ public class InternosController {
     }
 
     private void darDeBaja(Interno interno) {
-        // Diálogo para seleccionar motivo y estado de baja
-        Dialog<String[]> dialog = crearDialogoBaja(interno.getNombreCompleto());
-        Optional<String[]> resultado = dialog.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/BajaModal.fxml"));
+            javafx.scene.Parent root = loader.load();
 
-        resultado.ifPresent(datos -> {
-            String estado   = datos[0];
-            String motivo   = datos[1];
-            String fechaEgreso = FormatHelper.localDateAIso(java.time.LocalDate.now());
+            BajaModalController ctrl = loader.getController();
+            ctrl.setDatos(interno, this::cargarDatos);
 
-            CompletableFuture
-                .supplyAsync(() -> InternoService.cambiarEstado(interno.getId(), estado, motivo, fechaEgreso))
-                .thenAcceptAsync(result -> {
-                    if (result.success) {
-                        AlertHelper.exito("Estado actualizado correctamente");
-                        cargarDatos();
-                    } else {
-                        AlertHelper.error("Error: " + result.errorMensaje);
-                    }
-                }, Platform::runLater);
-        });
+            Stage modal = new Stage();
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.initOwner(AppConfig.getPrimaryStage());
+            modal.setTitle("Dar de baja: " + interno.getNombreCompleto().trim());
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(
+                    getClass().getResource("/css/dark-futuristic.css").toExternalForm()
+            );
+            modal.setScene(scene);
+            modal.setResizable(false);
+            modal.centerOnScreen();
+            modal.showAndWait();
+
+        } catch (Exception e) {
+            AlertHelper.error("Error al abrir ventana de baja: " + e.getMessage());
+        }
     }
 
-    private Dialog<String[]> crearDialogoBaja(String nombreCompleto) {
-        Dialog<String[]> dialog = new Dialog<>();
-        dialog.setTitle("Dar de baja: " + nombreCompleto);
-        dialog.setHeaderText("Seleccioná el motivo de baja");
-
-        ButtonType btnConfirmar = new ButtonType("Confirmar", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(btnConfirmar, ButtonType.CANCEL);
-
-        ComboBox<String> cmbTipo = new ComboBox<>(FXCollections.observableArrayList(
-                "alta", "abandono", "fallecido", "derivado"
-        ));
-        cmbTipo.setValue("alta");
-
-        TextArea txtMotivo = new TextArea();
-        txtMotivo.setPromptText("Descripción del motivo (obligatorio)");
-        txtMotivo.setPrefRowCount(3);
-        txtMotivo.setWrapText(true);
-
-        javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(10,
-                new Label("Tipo de egreso:"), cmbTipo,
-                new Label("Motivo:"), txtMotivo
+    private void reactivar(Interno interno) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Reactivar interno");
+        alert.setHeaderText(null);
+        alert.setContentText("¿Confirmás la reactivación de "
+                + interno.getNombreCompleto().trim() + "?\n"
+                + "El interno volverá al estado Activo.");
+        alert.initOwner(AppConfig.getPrimaryStage());
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("/css/dark-futuristic.css").toExternalForm()
         );
-        content.setPadding(new javafx.geometry.Insets(20));
-        dialog.getDialogPane().setContent(content);
+        alert.getDialogPane().getStyleClass().add("root-dark");
 
-        // Deshabilitar confirmar si no hay motivo
-        javafx.scene.Node btnConfirmarNode = dialog.getDialogPane().lookupButton(btnConfirmar);
-        btnConfirmarNode.setDisable(true);
-        txtMotivo.textProperty().addListener((obs, o, n) ->
-                btnConfirmarNode.setDisable(n.trim().isEmpty())
-        );
-
-        dialog.setResultConverter(btn -> {
-            if (btn == btnConfirmar) {
-                return new String[]{ cmbTipo.getValue(), txtMotivo.getText().trim() };
+        alert.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                CompletableFuture
+                    .supplyAsync(() -> InternoService.cambiarEstado(interno.getId(), "activo", null, null))
+                    .thenAcceptAsync(result -> {
+                        if (result.success) {
+                            AlertHelper.exito("Interno reactivado correctamente");
+                            cargarDatos();
+                        } else {
+                            AlertHelper.error("Error al reactivar: " + result.errorMensaje);
+                        }
+                    }, Platform::runLater);
             }
-            return null;
         });
-
-        return dialog;
     }
 
     private void setLoading(boolean loading) {
