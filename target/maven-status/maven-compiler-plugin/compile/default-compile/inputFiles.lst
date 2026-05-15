@@ -1,22 +1,23 @@
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\models\ContactoFamiliar.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\App.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\services\InternoService.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\models\Egreso.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\DashboardController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\ReportesController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\utils\FormatHelper.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\models\Interno.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\config\AppConfig.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\services\ReportesService.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\InternosController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\MainController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\RegistrarCobroModalController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\CobranzasController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\services\CobranzasService.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\LoginController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\services\AuthService.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\models\Cuota.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\InternoFormController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\PagosController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\controllers\BajaModalController.java
-C:\Users\Chupeete\Desktop\Proyectos\Proyecto Buscando El Ser\desktopapp\src\main\java\com\gestion\utils\AlertHelper.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\CobranzasController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\InternosController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\models\Cuota.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\InternoFormController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\services\ReportesService.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\BajaModalController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\App.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\models\ContactoFamiliar.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\DashboardController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\ReportesController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\services\AuthService.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\models\Interno.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\MainController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\LoginController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\utils\AlertHelper.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\NuevoEgresoModalController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\utils\FormatHelper.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\services\InternoService.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\models\Egreso.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\services\CobranzasService.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\config\AppConfig.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\PagosController.java
+C:\Users\HP\Desktop\Proyectos\Buscando el ser\desktopapp\src\main\java\com\gestion\controllers\RegistrarCobroModalController.java

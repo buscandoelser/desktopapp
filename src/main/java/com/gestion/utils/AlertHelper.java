@@ -19,6 +19,10 @@ public final class AlertHelper {
 
     // ── Toast (notificación esquina inferior derecha) ─────────
     public static void toast(String mensaje, TipoToast tipo) {
+        // Siempre loguear a consola para facilitar debug
+        if (tipo == TipoToast.ERROR) System.err.println("[ERROR] " + mensaje);
+        else                         System.out.println("[" + tipo + "] " + mensaje);
+
         Platform.runLater(() -> {
             Stage stage = AppConfig.getPrimaryStage();
             if (stage == null) return;
@@ -29,6 +33,8 @@ public final class AlertHelper {
                 "-fx-text-fill: white;" +
                 "-fx-padding: 14 20 14 20;"
             );
+            lbl.setWrapText(true);
+            lbl.setMaxWidth(380);
 
             StackPane container = new StackPane(lbl);
             container.setStyle(
@@ -36,23 +42,23 @@ public final class AlertHelper {
                 "-fx-background-radius: 10;" +
                 "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 12, 0, 0, 4);"
             );
-            container.setPrefWidth(340);
+            container.setPrefWidth(400);
             container.setAlignment(Pos.CENTER_LEFT);
 
             Popup popup = new Popup();
             popup.getContent().add(container);
             popup.setAutoHide(true);
 
-            // Posición: esquina inferior derecha
-            double x = stage.getX() + stage.getWidth()  - 360;
-            double y = stage.getY() + stage.getHeight()  - 100;
+            double x = stage.getX() + stage.getWidth()  - 420;
+            double y = stage.getY() + stage.getHeight()  - 120;
             popup.show(stage, x, y);
 
-            // Fade out después de 3 segundos
+            // Errores duran 12 s, el resto 3 s
+            double segundos = tipo == TipoToast.ERROR ? 12 : 3;
             FadeTransition fade = new FadeTransition(Duration.millis(600), container);
             fade.setFromValue(1.0);
             fade.setToValue(0.0);
-            fade.setDelay(Duration.seconds(3));
+            fade.setDelay(Duration.seconds(segundos));
             fade.setOnFinished(e -> popup.hide());
             fade.play();
         });

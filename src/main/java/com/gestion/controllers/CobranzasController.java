@@ -17,7 +17,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class CobranzasController {
@@ -43,16 +45,27 @@ public class CobranzasController {
     @FXML private TableColumn<Cuota, String>    colInterno;
     @FXML private TableColumn<Cuota, String>    colConcepto;
     @FXML private TableColumn<Cuota, String>    colMonto;
-    @FXML private TableColumn<Cuota, String>    colMetodo;
+    @FXML private TableColumn<Cuota, String>    colSaldo;
     @FXML private TableColumn<Cuota, String>    colEstado;
     @FXML private TableColumn<Cuota, Void>      colAcciones;
 
     private final ObservableList<Cuota> datos = FXCollections.observableArrayList();
+    private List<Cuota> todosLosDatos = List.of();
 
     private static final String[] MESES_NOMBRE = {
         "Todos","Enero","Febrero","Marzo","Abril","Mayo","Junio",
         "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
     };
+
+    // Label visible → valor API
+    private static final Map<String, String> ESTADOS = new LinkedHashMap<>();
+    static {
+        ESTADOS.put("Todos",    null);
+        ESTADOS.put("Pendiente","pendiente");
+        ESTADOS.put("Parcial",  "pagada_parcial");
+        ESTADOS.put("Pagada",   "pagada");
+        ESTADOS.put("Con mora", "con_mora");
+    }
 
     @FXML
     public void initialize() {
@@ -63,7 +76,7 @@ public class CobranzasController {
         cmbMes.setItems(FXCollections.observableArrayList(MESES_NOMBRE));
         cmbMes.setValue(MESES_NOMBRE[LocalDate.now().getMonthValue()]);
 
-        cmbEstado.setItems(FXCollections.observableArrayList("Todos", "pendiente", "parcial", "pagada", "con_mora"));
+        cmbEstado.setItems(FXCollections.observableArrayList(ESTADOS.keySet()));
         cmbEstado.setValue("Todos");
 
         configurarColumnas();
@@ -71,18 +84,31 @@ public class CobranzasController {
 
         cmbMes.setOnAction(e -> cargarDatos());
         cmbEstado.setOnAction(e -> cargarDatos());
+        txtBusqueda.textProperty().addListener((obs, o, n) -> filtrarLocal());
 
         cargarDatos();
     }
 
     private void configurarColumnas() {
-        colFecha.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFechaVencimiento()));
-        colInterno.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getInternoNombre()));
+        colFecha.setCellValueFactory(c    -> new SimpleStringProperty(c.getValue().getFechaVencimiento()));
+        colInterno.setCellValueFactory(c  -> new SimpleStringProperty(
+                c.getValue().getInternoNombre() + "  ·  " + c.getValue().getLegajo()));
         colConcepto.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMesPeriodo()));
-        colMonto.setCellValueFactory(c -> new SimpleStringProperty("$" + c.getValue().getMontoOriginal()));
-        colMetodo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSaldoPendiente() != null
-                ? "Saldo: $" + c.getValue().getSaldoPendiente() : "—"));
-        colEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstadoDisplay()));
+        colMonto.setCellValueFactory(c    -> new SimpleStringProperty("$" + c.getValue().getTotalConInteres()));
+        colSaldo.setCellValueFactory(c    -> new SimpleStringProperty("$" + c.getValue().getSaldoPendiente()));
+        colEstado.setCellValueFactory(c   -> new SimpleStringProperty(c.getValue().getEstadoDisplay()));
+
+        colSaldo.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) { setText(null); setStyle(""); return; }
+                setText(item);
+                // Saldo cero → verde, saldo pendiente → amarillo
+                boolean sinDeuda = item.equals("$0") || item.equals("$0.00") || item.equals("$0,00");
+                setStyle(sinDeuda ? "-fx-text-fill: #4ade80;" : "-fx-text-fill: #facc15; -fx-font-weight: 600;");
+            }
+        });
 
         colEstado.setCellFactory(col -> new TableCell<>() {
             @Override
@@ -90,11 +116,12 @@ public class CobranzasController {
                 super.updateItem(item, empty);
                 if (empty || item == null) { setText(null); setStyle(""); return; }
                 setText(item);
-                String color;
-                if ("Pagada".equals(item))        color = "-fx-text-fill: #4ade80;";
-                else if ("Con mora".equals(item)) color = "-fx-text-fill: #f87171;";
-                else if ("Parcial".equals(item))  color = "-fx-text-fill: #facc15;";
-                else                              color = "-fx-text-fill: #94a3b8;";
+                String color = switch (item) {
+                    case "Pagada"   -> "-fx-text-fill: #4ade80;";
+                    case "Con mora" -> "-fx-text-fill: #f87171;";
+                    case "Parcial"  -> "-fx-text-fill: #facc15;";
+                    default         -> "-fx-text-fill: #94a3b8;";
+                };
                 setStyle(color);
             }
         });
@@ -104,10 +131,7 @@ public class CobranzasController {
             private final Button btnPagar = new Button("Pagar");
             {
                 btnPagar.getStyleClass().add("btn-sm-success");
-                btnPagar.setOnAction(e -> {
-                    Cuota c = getTableView().getItems().get(getIndex());
-                    abrirModal(c);
-                });
+                btnPagar.setOnAction(e -> abrirModal(getTableView().getItems().get(getIndex())));
             }
 
             @Override
@@ -115,67 +139,87 @@ public class CobranzasController {
                 super.updateItem(item, empty);
                 if (empty) { setGraphic(null); return; }
                 Cuota c = getTableView().getItems().get(getIndex());
-                boolean pagable = "pendiente".equals(c.getEstado())
-                               || "parcial".equals(c.getEstado())
-                               || "con_mora".equals(c.getEstado());
                 HBox box = new HBox();
-                if (puedePagar && pagable) box.getChildren().add(btnPagar);
+                if (puedePagar && esPagable(c.getEstado())) box.getChildren().add(btnPagar);
                 setGraphic(box);
             }
         });
+    }
+
+    private boolean esPagable(String estado) {
+        return "pendiente".equals(estado)
+            || "pagada_parcial".equals(estado)
+            || "con_mora".equals(estado);
     }
 
     private void cargarDatos() {
         setLoading(true);
         datos.clear();
 
-        int mesIdx   = cmbMes.getSelectionModel().getSelectedIndex();
-        int anio     = mesIdx > 0 ? LocalDate.now().getYear() : 0;
-        int mes      = mesIdx > 0 ? mesIdx : 0;
-        String estado = "Todos".equals(cmbEstado.getValue()) ? null : cmbEstado.getValue();
+        int mesIdx = cmbMes.getSelectionModel().getSelectedIndex();
+        int anio   = mesIdx > 0 ? LocalDate.now().getYear() : 0;
+        int mes    = mesIdx > 0 ? mesIdx : 0;
+        String estadoApi = ESTADOS.get(cmbEstado.getValue());
 
         CompletableFuture
-            .supplyAsync(() -> CobranzasService.listarCuotas(estado, anio, mes, 1))
+            .supplyAsync(() -> CobranzasService.listarCuotas(estadoApi, anio, mes, 1))
             .thenAcceptAsync(result -> {
                 setLoading(false);
                 if (!result.success) {
                     AlertHelper.error("Error al cargar cobranzas: " + result.errorMensaje);
                     return;
                 }
-                List<Cuota> cuotas = result.data;
-                datos.addAll(cuotas);
+                todosLosDatos = result.data;
+                actualizarStats(result.data);
                 lblTotal.setText("Total: " + result.total + " cuotas");
-                actualizarStats(cuotas);
-            }, Platform::runLater);
+                filtrarLocal();
+            }, Platform::runLater)
+            .exceptionally(ex -> {
+                ex.printStackTrace();
+                Platform.runLater(() -> AlertHelper.error("Excepción inesperada: " + ex.getMessage()));
+                return null;
+            });
+    }
+
+    private void filtrarLocal() {
+        String filtro = txtBusqueda.getText().trim().toLowerCase();
+        datos.clear();
+        if (filtro.isEmpty()) {
+            datos.addAll(todosLosDatos);
+        } else {
+            todosLosDatos.stream()
+                    .filter(c -> c.getInternoNombre().toLowerCase().contains(filtro)
+                              || c.getLegajo().toLowerCase().contains(filtro)
+                              || c.getMesPeriodo().toLowerCase().contains(filtro))
+                    .forEach(datos::add);
+        }
     }
 
     private void actualizarStats(List<Cuota> cuotas) {
-        double cobrado   = 0, pendiente = 0, mora = 0;
-        int    pagadas   = 0;
+        double cobrado = 0, pendiente = 0, mora = 0;
+        int    pagadas = 0;
 
         for (Cuota c : cuotas) {
-            double pagado   = parseDouble(c.getMontoPagado());
-            cobrado   += pagado;
+            cobrado   += parseDouble(c.getMontoPagado());
             pendiente += parseDouble(c.getSaldoPendiente());
-            if ("con_mora".equals(c.getEstado())) mora += parseDouble(c.getSaldoPendiente());
-            if ("pagada".equals(c.getEstado())) pagadas++;
+            if ("con_mora".equals(c.getEstado()))  mora += parseDouble(c.getSaldoPendiente());
+            if ("pagada".equals(c.getEstado()))    pagadas++;
         }
 
-        double tasa = cuotas.isEmpty() ? 0 : (double) pagadas / cuotas.size() * 100;
+        long conMora = cuotas.stream().filter(c -> "con_mora".equals(c.getEstado())).count();
+        double tasa  = cuotas.isEmpty() ? 0 : (double) pagadas / cuotas.size() * 100;
 
         lblCobrado.setText(formatMonto(cobrado));
         lblCobradoDelta.setText(pagadas + " cuotas pagadas");
         lblPendiente.setText(formatMonto(pendiente));
         lblPendienteDelta.setText((cuotas.size() - pagadas) + " cuotas pendientes");
         lblVencido.setText(formatMonto(mora));
-        lblVencidoDelta.setText(cuotas.stream().filter(c -> "con_mora".equals(c.getEstado())).count() + " con mora");
+        lblVencidoDelta.setText(conMora + " con mora");
         lblTasa.setText(String.format("%.1f%%", tasa));
         lblTasaDelta.setText("tasa de cobro");
     }
 
-    @FXML private void onRegistrar() {
-        abrirModal(null);
-    }
+    @FXML private void onRegistrar() { abrirModal(null); }
 
     @FXML private void onExportar() {
         AlertHelper.info("Exportación CSV disponible próximamente.");
@@ -201,11 +245,12 @@ public class CobranzasController {
                     getClass().getResource("/css/dark-futuristic.css").toExternalForm());
             modal.setScene(scene);
             modal.setMinWidth(560);
-            modal.setMinHeight(620);
+            modal.setMinHeight(640);
             modal.centerOnScreen();
             modal.showAndWait();
 
         } catch (Exception e) {
+            e.printStackTrace();
             AlertHelper.error("Error al abrir ventana de cobro: " + e.getMessage());
         }
     }

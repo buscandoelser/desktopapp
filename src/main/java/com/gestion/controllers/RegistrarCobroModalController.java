@@ -42,7 +42,12 @@ public class RegistrarCobroModalController {
     @FXML private Label              lblSinCuota;
     @FXML private TextField          txtMonto;
     @FXML private ComboBox<String>   cmbMedio;
+    @FXML private VBox               panelObraSocial;
+    @FXML private TextField          txtPagadorObraSocial;
     @FXML private DatePicker         dpFechaPago;
+    @FXML private TextField          txtDescuento;
+    @FXML private VBox               panelDescripcionDescuento;
+    @FXML private TextField          txtDescripcionDescuento;
     @FXML private TextArea           txtObservacion;
 
     // ── Tab 2: Generar Mes ────────────────────────────────────
@@ -86,13 +91,29 @@ public class RegistrarCobroModalController {
     }
 
     private void configurarTab1() {
-        cmbMedio.setItems(FXCollections.observableArrayList("efectivo", "transferencia"));
+        cmbMedio.setItems(FXCollections.observableArrayList("efectivo", "transferencia", "obra_social"));
         cmbMedio.setValue("efectivo");
         dpFechaPago.setValue(LocalDate.now());
 
         txtMonto.textProperty().addListener((obs, o, n) -> actualizarBoton());
-        cmbMedio.valueProperty().addListener((obs, o, n) -> actualizarBoton());
+        cmbMedio.valueProperty().addListener((obs, o, n) -> {
+            boolean esObraSocial = "obra_social".equals(n);
+            panelObraSocial.setVisible(esObraSocial);
+            panelObraSocial.setManaged(esObraSocial);
+            if (!esObraSocial) txtPagadorObraSocial.clear();
+            actualizarBoton();
+        });
         cmbInterno.valueProperty().addListener((obs, o, n) -> actualizarBoton());
+        txtPagadorObraSocial.textProperty().addListener((obs, o, n) -> actualizarBoton());
+        txtDescuento.textProperty().addListener((obs, o, n) -> {
+            double desc = parseDescuento();
+            boolean tieneDescuento = desc > 0;
+            panelDescripcionDescuento.setVisible(tieneDescuento);
+            panelDescripcionDescuento.setManaged(tieneDescuento);
+            if (!tieneDescuento) txtDescripcionDescuento.clear();
+            actualizarBoton();
+        });
+        txtDescripcionDescuento.textProperty().addListener((obs, o, n) -> actualizarBoton());
     }
 
     private void configurarTab2() {
@@ -181,7 +202,7 @@ public class RegistrarCobroModalController {
     private void mostrarCuota(Cuota cuota) {
         cuotaPreseleccionada = cuota;
         lblPeriodo.setText(cuota.getMesPeriodo());
-        lblMontoOriginal.setText("$" + cuota.getMontoOriginal());
+        lblMontoOriginal.setText("$" + cuota.getTotalConInteres());
         lblSaldo.setText("$" + cuota.getSaldoPendiente());
         lblEstadoCuota.setText(cuota.getEstadoDisplay());
 
@@ -216,11 +237,17 @@ public class RegistrarCobroModalController {
             double monto = parseMonto();
             double saldo = parseDouble(cuotaPreseleccionada != null
                     ? cuotaPreseleccionada.getSaldoPendiente() : null);
+            boolean obraSocialOk = !"obra_social".equals(cmbMedio.getValue())
+                    || !txtPagadorObraSocial.getText().trim().isEmpty();
+            boolean descuentoOk = parseDescuento() <= 0
+                    || !txtDescripcionDescuento.getText().trim().isEmpty();
             boolean valido = cuotaPreseleccionada != null
                     && monto > 0
                     && monto <= saldo
                     && cmbMedio.getValue() != null
-                    && dpFechaPago.getValue() != null;
+                    && dpFechaPago.getValue() != null
+                    && obraSocialOk
+                    && descuentoOk;
             btnConfirmar.setDisable(!valido);
         }
     }
@@ -252,9 +279,23 @@ public class RegistrarCobroModalController {
 
         Map<String, Object> datos = new HashMap<>();
         datos.put("cuota_id",    cuotaPreseleccionada.getId());
+        datos.put("interno_id",  cmbInterno.getValue().getId());
         datos.put("monto",       String.valueOf(monto));
         datos.put("medio_pago",  cmbMedio.getValue());
         datos.put("fecha_pago",  dpFechaPago.getValue().toString());
+
+        if ("obra_social".equals(cmbMedio.getValue())) {
+            datos.put("pagador_obra_social", txtPagadorObraSocial.getText().trim());
+        }
+
+        double descuento = parseDescuento();
+        if (descuento > 0) {
+            datos.put("descuento", String.valueOf(descuento));
+            datos.put("descripcion_descuento", txtDescripcionDescuento.getText().trim());
+        } else {
+            datos.put("descuento", "0");
+        }
+
         String obs = txtObservacion.getText().trim();
         if (!obs.isEmpty()) datos.put("observacion", obs);
 
@@ -314,7 +355,10 @@ public class RegistrarCobroModalController {
         cmbInterno.setDisable(cargando);
         txtMonto.setDisable(cargando);
         cmbMedio.setDisable(cargando);
+        txtPagadorObraSocial.setDisable(cargando);
         dpFechaPago.setDisable(cargando);
+        txtDescuento.setDisable(cargando);
+        txtDescripcionDescuento.setDisable(cargando);
         cmbAnio.setDisable(cargando);
         cmbMesGenerar.setDisable(cargando);
         cmbInternoGenerar.setDisable(cargando);
@@ -370,7 +414,7 @@ public class RegistrarCobroModalController {
 
     private boolean esPendiente(String estado) {
         return "pendiente".equals(estado)
-            || "parcial".equals(estado)
+            || "pagada_parcial".equals(estado)
             || "con_mora".equals(estado);
     }
 
@@ -391,6 +435,16 @@ public class RegistrarCobroModalController {
     private double parseMonto() {
         try {
             return Double.parseDouble(txtMonto.getText().trim().replace(",", "."));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private double parseDescuento() {
+        try {
+            String text = txtDescuento.getText().trim();
+            if (text.isEmpty()) return 0;
+            return Double.parseDouble(text.replace(",", "."));
         } catch (Exception e) {
             return 0;
         }

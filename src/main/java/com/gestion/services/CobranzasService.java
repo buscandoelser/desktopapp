@@ -25,10 +25,27 @@ public class CobranzasService {
                 .addHeader("Authorization", "Bearer " + AppConfig.getJwtToken());
     }
 
-    // ── GET /cobranzas/cuotas ─────────────────────────────────
+    /**
+     * Lee el body y lo parsea como JSON.
+     * Si el servidor devuelve HTML lanza IOException con mensaje claro
+     * y loguea los primeros 300 chars del body en consola.
+     */
+    private static JsonNode safeReadJson(Response response) throws IOException {
+        String body    = response.body().string();
+        String trimmed = body.trim();
+        System.out.println("[HTTP " + response.code() + "] " + response.request().url());
+        System.out.println("[RESPONSE] " + trimmed.substring(0, Math.min(500, trimmed.length())));
+        if (trimmed.startsWith("<")) {
+            throw new IOException("El servidor devolvió HTML (HTTP " + response.code() + ")."
+                    + " El backend puede estar durmiendo o la ruta no existe.");
+        }
+        return mapper.readTree(trimmed);
+    }
+
+    // ── GET /cuotas ─────────────────────────────────
     public static ServiceResult<List<Cuota>> listarCuotas(String estado, int anio, int mes, int page) {
         try {
-            HttpUrl.Builder url = HttpUrl.parse(AppConfig.API_BASE_URL + "/cobranzas/cuotas").newBuilder();
+            HttpUrl.Builder url = HttpUrl.parse(AppConfig.API_BASE_URL + "/cuotas").newBuilder();
             url.addQueryParameter("page", String.valueOf(page));
             if (estado != null && !estado.isEmpty()) url.addQueryParameter("estado", estado);
             if (anio > 0) url.addQueryParameter("anio", String.valueOf(anio));
@@ -37,8 +54,7 @@ public class CobranzasService {
             Request req = authBuilder(url.build().toString()).get().build();
 
             try (Response response = client.newCall(req).execute()) {
-                String body = response.body().string();
-                JsonNode node = mapper.readTree(body);
+                JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
 
                 JsonNode datosNode = node.get("datos");
@@ -51,27 +67,27 @@ public class CobranzasService {
                 return ServiceResult.success(lista, total);
             }
         } catch (Exception e) {
-            return ServiceResult.error("Error de conexión: " + e.getMessage());
+            System.err.println("[listarCuotas] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
         }
     }
 
-    // ── GET /cobranzas/cuotas/:internoId ─────────────────────
+    // ── GET /cuotas/:internoId ─────────────────────
     public static ServiceResult<JsonNode> cuentaCorriente(int internoId) {
         try {
-            Request req = authBuilder(AppConfig.API_BASE_URL + "/cobranzas/cuotas/" + internoId).get().build();
-
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/cuotas/" + internoId).get().build();
             try (Response response = client.newCall(req).execute()) {
-                String body = response.body().string();
-                JsonNode node = mapper.readTree(body);
+                JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
                 return ServiceResult.success(node, 1);
             }
-        } catch (IOException e) {
-            return ServiceResult.error("Error de conexión: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("[cuentaCorriente] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
         }
     }
 
-    // ── POST /cobranzas/cuotas/generar-mes ───────────────────
+    // ── POST /cuotas/generar-mes ───────────────────
     public static ServiceResult<JsonNode> generarMes(int anio, int mes, Integer internoId) {
         try {
             Map<String, Object> datos = new java.util.HashMap<>();
@@ -80,50 +96,81 @@ public class CobranzasService {
             if (internoId != null) datos.put("interno_id", internoId);
 
             RequestBody body = RequestBody.create(mapper.writeValueAsString(datos), JSON_TYPE);
-            Request req = authBuilder(AppConfig.API_BASE_URL + "/cobranzas/cuotas/generar-mes").post(body).build();
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/cuotas/generar-mes").post(body).build();
 
             try (Response response = client.newCall(req).execute()) {
-                String rb = response.body().string();
-                JsonNode node = mapper.readTree(rb);
+                JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
                 return ServiceResult.success(node, 1);
             }
-        } catch (IOException e) {
-            return ServiceResult.error("Error de conexión: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("[generarMes] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
         }
     }
 
-    // ── POST /cobranzas/pagos ─────────────────────────────────
+    // ── POST /pagos ─────────────────────────────────
     public static ServiceResult<JsonNode> registrarPago(Map<String, Object> datos) {
         try {
             RequestBody body = RequestBody.create(mapper.writeValueAsString(datos), JSON_TYPE);
-            Request req = authBuilder(AppConfig.API_BASE_URL + "/cobranzas/pagos").post(body).build();
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/pagos").post(body).build();
 
             try (Response response = client.newCall(req).execute()) {
-                String rb = response.body().string();
-                JsonNode node = mapper.readTree(rb);
+                JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
                 return ServiceResult.success(node, 1);
             }
-        } catch (IOException e) {
-            return ServiceResult.error("Error de conexión: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("[registrarPago] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
         }
     }
 
-    // ── GET /cobranzas/egresos ────────────────────────────────
-    public static ServiceResult<List<Egreso>> listarEgresos(String desde, String hasta, String categoria, int page) {
+    // ── GET /pagos/:internoId ──────────────────────
+    public static ServiceResult<JsonNode> historialPagos(int internoId) {
         try {
-            HttpUrl.Builder url = HttpUrl.parse(AppConfig.API_BASE_URL + "/cobranzas/egresos").newBuilder();
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/pagos/" + internoId).get().build();
+            try (Response response = client.newCall(req).execute()) {
+                JsonNode node = safeReadJson(response);
+                if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
+                return ServiceResult.success(node, 1);
+            }
+        } catch (Exception e) {
+            System.err.println("[historialPagos] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
+        }
+    }
+
+    // ── POST /ejecutar-interes ─────────────────────
+    public static ServiceResult<JsonNode> ejecutarInteres() {
+        try {
+            RequestBody body = RequestBody.create("{}", JSON_TYPE);
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/ejecutar-interes").post(body).build();
+            try (Response response = client.newCall(req).execute()) {
+                JsonNode node = safeReadJson(response);
+                if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
+                return ServiceResult.success(node, 1);
+            }
+        } catch (Exception e) {
+            System.err.println("[ejecutarInteres] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
+        }
+    }
+
+    // ── GET /egresos ────────────────────────────────
+    public static ServiceResult<List<Egreso>> listarEgresos(String desde, String hasta, String categoria, String medioPago, int page) {
+        try {
+            HttpUrl.Builder url = HttpUrl.parse(AppConfig.API_BASE_URL + "/egresos").newBuilder();
             url.addQueryParameter("page", String.valueOf(page));
             if (desde     != null && !desde.isEmpty())     url.addQueryParameter("desde",     desde);
             if (hasta     != null && !hasta.isEmpty())     url.addQueryParameter("hasta",     hasta);
             if (categoria != null && !categoria.isEmpty()) url.addQueryParameter("categoria", categoria);
+            if (medioPago != null && !medioPago.isEmpty()) url.addQueryParameter("medio_pago", medioPago);
 
             Request req = authBuilder(url.build().toString()).get().build();
 
             try (Response response = client.newCall(req).execute()) {
-                String body = response.body().string();
-                JsonNode node = mapper.readTree(body);
+                JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
 
                 JsonNode datosNode = node.get("datos");
@@ -136,24 +183,28 @@ public class CobranzasService {
                 return ServiceResult.success(lista, total);
             }
         } catch (Exception e) {
-            return ServiceResult.error("Error de conexión: " + e.getMessage());
+            System.err.println("[listarEgresos] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
         }
     }
 
-    // ── POST /cobranzas/egresos ───────────────────────────────
+    // ── POST /egresos ───────────────────────────────
     public static ServiceResult<JsonNode> registrarEgreso(Map<String, Object> datos) {
         try {
-            RequestBody body = RequestBody.create(mapper.writeValueAsString(datos), JSON_TYPE);
-            Request req = authBuilder(AppConfig.API_BASE_URL + "/cobranzas/egresos").post(body).build();
+            String json = mapper.writeValueAsString(datos);
+            System.out.println("[registrarEgreso] POST " + AppConfig.API_BASE_URL + "/egresos");
+            System.out.println("[registrarEgreso] Body: " + json);
+            RequestBody body = RequestBody.create(json, JSON_TYPE);
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/egresos").post(body).build();
 
             try (Response response = client.newCall(req).execute()) {
-                String rb = response.body().string();
-                JsonNode node = mapper.readTree(rb);
+                JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
                 return ServiceResult.success(node, 1);
             }
-        } catch (IOException e) {
-            return ServiceResult.error("Error de conexión: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("[registrarEgreso] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
         }
     }
 

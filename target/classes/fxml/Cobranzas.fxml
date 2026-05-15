@@ -87,16 +87,16 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>
             </columnResizePolicy>
             <columns>
-                <TableColumn fx:id="colFecha"    text="Fecha"    prefWidth="90"/>
-                <TableColumn fx:id="colInterno"  text="Interno"  prefWidth="200"/>
-                <TableColumn fx:id="colConcepto" text="Concepto" prefWidth="200"/>
-                <TableColumn fx:id="colMonto"    text="Monto"    prefWidth="120"/>
-                <TableColumn fx:id="colMetodo"   text="Método"   prefWidth="120"/>
-                <TableColumn fx:id="colEstado"   text="Estado"   prefWidth="100"/>
-                <TableColumn fx:id="colAcciones" text="Acciones" prefWidth="100"/>
+                <TableColumn fx:id="colFecha"    text="Vencimiento" prefWidth="105"/>
+                <TableColumn fx:id="colInterno"  text="Interno"     prefWidth="190"/>
+                <TableColumn fx:id="colConcepto" text="Período"     prefWidth="90"/>
+                <TableColumn fx:id="colMonto"    text="Cuota"       prefWidth="110"/>
+                <TableColumn fx:id="colSaldo"    text="Saldo"       prefWidth="110"/>
+                <TableColumn fx:id="colEstado"   text="Estado"      prefWidth="110"/>
+                <TableColumn fx:id="colAcciones" text="Acciones"    prefWidth="90"/>
             </columns>
             <placeholder>
-                <Label text="No hay movimientos para mostrar" styleClass="table-placeholder"/>
+                <Label text="No hay cuotas para mostrar" styleClass="table-placeholder"/>
             </placeholder>
         </TableView>
     </VBox>

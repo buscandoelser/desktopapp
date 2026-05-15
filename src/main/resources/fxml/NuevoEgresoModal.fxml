@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.NuevoEgresoModalController"
+      styleClass="root-dark,form-container"
+      spacing="0"
+      prefWidth="520"
+      prefHeight="480">
+
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <HBox styleClass="wizard-header" alignment="CENTER_LEFT" spacing="14">
+        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+        <VBox spacing="3">
+            <Label text="Registrar egreso" styleClass="wizard-step-title"/>
+            <Label text="Ingresá los datos del gasto institucional" styleClass="label-secondary"/>
+        </VBox>
+    </HBox>
+
+    <Separator/>
+
+    <!-- ── Formulario ─────────────────────────────────────────── -->
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="scroll-dark" VBox.vgrow="ALWAYS">
+        <VBox spacing="18">
+            <padding><Insets top="24" right="24" bottom="28" left="24"/></padding>
+
+            <!-- Descripción -->
+            <VBox spacing="6">
+                <Label text="DESCRIPCIÓN *" styleClass="input-label"/>
+                <TextField fx:id="txtDescripcion"
+                           promptText="Descripción del gasto"
+                           styleClass="input-field"/>
+            </VBox>
+
+            <!-- Monto + Categoría -->
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="MONTO *" styleClass="input-label"/>
+                    <TextField fx:id="txtMonto" promptText="0.00" styleClass="input-field"/>
+                </VBox>
+                <VBox spacing="6" prefWidth="210">
+                    <Label text="CATEGORÍA *" styleClass="input-label"/>
+                    <ComboBox fx:id="cmbCategoria" maxWidth="Infinity" styleClass="combo-field"/>
+                </VBox>
+            </HBox>
+
+            <!-- Medio de pago + Fecha -->
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="MEDIO DE PAGO *" styleClass="input-label"/>
+                    <ComboBox fx:id="cmbMedio" maxWidth="Infinity" styleClass="combo-field"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="FECHA *" styleClass="input-label"/>
+                    <DatePicker fx:id="dpFecha" maxWidth="Infinity" styleClass="combo-field"/>
+                </VBox>
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+
+    <Separator/>
+
+    <!-- ── Footer ──────────────────────────────────────────────── -->
+    <HBox styleClass="wizard-footer" alignment="CENTER_RIGHT" spacing="12">
+        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+        <Button text="CANCELAR" onAction="#onCancelar" styleClass="btn-ghost"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ProgressIndicator fx:id="progressIndicator" prefWidth="28" prefHeight="28"
+                           styleClass="progress-acento" visible="false"/>
+        <Button fx:id="btnConfirmar" text="REGISTRAR" onAction="#onConfirmar"
+                styleClass="btn-primary"/>
+    </HBox>
+
+</VBox>

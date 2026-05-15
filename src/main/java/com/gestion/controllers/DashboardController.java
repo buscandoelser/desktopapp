@@ -111,10 +111,10 @@ public class DashboardController {
                 if (!result.success || result.data == null) return;
 
                 result.data.stream().limit(4).forEach(cuota -> {
-                    String fecha  = cuota.getFechaVencimiento() != null
-                            ? cuota.getFechaVencimiento().substring(5).replace("-", "/") : "—";
-                    String nombre = cuota.getInternoNombre() != null ? cuota.getInternoNombre() : "—";
-                    String monto  = "$" + cuota.getMontoOriginal();
+                    String fv    = cuota.getFechaVencimiento();
+                    String fecha = fv.length() >= 10 ? fv.substring(5, 10).replace("-", "/") : fv;
+                    String nombre = cuota.getInternoNombre();
+                    String monto  = "$" + cuota.getTotalConInteres();
                     String estado = cuota.getEstadoDisplay();
                     listCobranzas.getChildren().add(filaCobranza(fecha, nombre, cuota.getMesPeriodo(), monto, estado));
                 });

@@ -89,11 +89,34 @@
                         </VBox>
                     </HBox>
 
+                    <!-- Pagador / Obra social (visible solo cuando medio = obra_social) -->
+                    <VBox fx:id="panelObraSocial" spacing="6" visible="false" managed="false">
+                        <Label text="PAGADOR / OBRA SOCIAL *" styleClass="input-label"/>
+                        <TextField fx:id="txtPagadorObraSocial"
+                                   promptText="Nombre de la obra social o pagador"
+                                   styleClass="input-field"/>
+                    </VBox>
+
                     <!-- Fecha de pago -->
                     <VBox spacing="6">
                         <Label text="FECHA DE PAGO *" styleClass="input-label"/>
                         <DatePicker fx:id="dpFechaPago" maxWidth="Infinity"
                                     styleClass="combo-field"/>
+                    </VBox>
+
+                    <!-- Descuento (opcional) -->
+                    <VBox spacing="6">
+                        <Label text="DESCUENTO ($)" styleClass="input-label"/>
+                        <TextField fx:id="txtDescuento" promptText="0.00 — dejar vacío si no hay descuento"
+                                   styleClass="input-field"/>
+                    </VBox>
+
+                    <!-- Motivo descuento (visible solo cuando descuento > 0) -->
+                    <VBox fx:id="panelDescripcionDescuento" spacing="6" visible="false" managed="false">
+                        <Label text="MOTIVO DEL DESCUENTO *" styleClass="input-label"/>
+                        <TextField fx:id="txtDescripcionDescuento"
+                                   promptText="Razón del descuento"
+                                   styleClass="input-field"/>
                     </VBox>
 
                     <!-- Observación -->
