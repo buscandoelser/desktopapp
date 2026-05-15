@@ -3,12 +3,14 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.geometry.Insets?>
 
 <!--
     Traducción directa del HTML Login.html.
     HTML: position:absolute layers sobre 1500×900 viewBox.
     JavaFX: StackPane root (equivalente), SVGPaths escalados ×0.573/×0.622.
 -->
+<?import javafx.scene.effect.ColorAdjust?>
 <StackPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.gestion.controllers.LoginController"
@@ -37,12 +39,15 @@
     </Pane>
 
     <!-- ─── CAPA 2: watermark (HTML: .watermark, bottom:2% right:4% width:28%) ─── -->
-    <ImageView fitWidth="240" fitHeight="240"
+    <ImageView fitWidth="230" fitHeight="230"
                preserveRatio="true" smooth="true"
-               opacity="0.18"
+               opacity="0.1"
                StackPane.alignment="BOTTOM_RIGHT"
-               style="-fx-translate-x: -34; -fx-translate-y: -11;">
+               style="-fx-translate-x: -22; -fx-translate-y: -10; -fx-effect: coloradjust(0.0, -1.0, 1.0, 0.0);">
         <image><Image url="@../logoLogin.png"/></image>
+        <effect>
+            <ColorAdjust brightness="1.0" />
+        </effect>
     </ImageView>
 
     <!-- ─── CAPA 3: formulario (HTML: .left — position:absolute inset:0 padding:44px 56px) ─── -->
@@ -52,7 +57,7 @@
 
         <!-- Brand (HTML: .brand img width:88 height:88) -->
         <HBox alignment="CENTER_LEFT" styleClass="login-brand-box">
-            <ImageView fitHeight="88" preserveRatio="true" smooth="true">
+            <ImageView fitHeight="66" preserveRatio="true" smooth="true">
                 <image><Image url="@../logo-buscando-ser.png"/></image>
             </ImageView>
         </HBox>
@@ -63,13 +68,13 @@
         <!-- Form-wrap (HTML: .form-wrap max-width:440px) -->
         <VBox spacing="16" maxWidth="440" styleClass="login-form-wrap">
 
-            <Label text="¡Bienvenido al sistema!"
-                   styleClass="login-left-title"
-                   wrapText="true" maxWidth="400"/>
+            <VBox spacing="0">
+                <VBox.margin><Insets top="28"/></VBox.margin>
+                <Label text="¡Bienvenido al" styleClass="login-left-title"/>
+                <Label text="sistema!" styleClass="login-left-title"/>
+            </VBox>
             <Label text="Ingresá tus credenciales para continuar."
                    styleClass="login-left-subtitle"/>
-
-            <Region prefHeight="4"/>
 
             <!-- Campo usuario (HTML: .field con icono SVG lead) -->
             <StackPane styleClass="login-field" maxWidth="440">

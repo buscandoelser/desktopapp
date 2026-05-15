@@ -3,6 +3,7 @@
    Paleta: pergamino cálido + ámbar dorado
    ============================================================ */
 
+
 /*
    BG          = #FBF6EA  (fondo — pergamino)
    PANEL       = #FFFCF5  (panel / tarjeta)
@@ -39,7 +40,7 @@
 /* Capa formulario — transparente (HTML: .left sin background) */
 .login-left-layer {
     -fx-background-color: transparent;
-    -fx-padding: 44 0 44 56;
+    -fx-padding: 26 0 44 56;
 }
 
 /* Brand box (HTML: .brand padding:4px 8px 18px) */
@@ -54,10 +55,10 @@
 
 /* Título (HTML: h1 44px weight:800 color:#2A2118) */
 .login-left-title {
+    -fx-font-family: "Segoe UI";
     -fx-font-size: 40px;
     -fx-font-weight: bold;
     -fx-text-fill: #2A2118;
-    -fx-line-spacing: -1;
 }
 
 /* Subtítulo (HTML: .sub 15px color:#6B5C4D) */

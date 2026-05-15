@@ -6,12 +6,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        var nunitoRegular    = getClass().getResourceAsStream("/fonts/Nunito-Regular.ttf");
+        var nunitoBold       = getClass().getResourceAsStream("/fonts/Nunito-Bold.ttf");
+        var nunitoExtraBold  = getClass().getResourceAsStream("/fonts/Nunito-ExtraBold.ttf");
+        if (nunitoRegular   != null) Font.loadFont(nunitoRegular,   14);
+        if (nunitoBold      != null) Font.loadFont(nunitoBold,      14);
+        if (nunitoExtraBold != null) Font.loadFont(nunitoExtraBold, 14);
+
         AppConfig.setPrimaryStage(primaryStage);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));

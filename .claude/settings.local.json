@@ -19,7 +19,9 @@
       "PowerShell(git *)",
       "PowerShell(gh repo *)",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\Archivos Claude Desing\" | ForEach-Object { $_.Name })",
-      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\desktopapp\\\\src\\\\main\\\\resources\" -Recurse | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\desktopapp\\\\src\\\\main\\\\resources\\\\\", \"\"\\) })"
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\desktopapp\\\\src\\\\main\\\\resources\" -Recurse | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\desktopapp\\\\src\\\\main\\\\resources\\\\\", \"\"\\) })",
+      "Bash(New-Item *)",
+      "PowerShell(New-Item *)"
     ]
   }
 }
