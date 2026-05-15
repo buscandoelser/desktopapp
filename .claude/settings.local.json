@@ -3,7 +3,23 @@
     "allow": [
       "Bash(npm --version)",
       "Bash(psql --version)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(gh repo *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "PowerShell(npm show *)",
+      "PowerShell(npm install *)",
+      "PowerShell(uipro init *)",
+      "PowerShell(uipro *)",
+      "PowerShell(irm https://raw.githubusercontent.com/JuliusBrussee/caveman/main/install.ps1 | iex)",
+      "Bash(Select-Object FullName)",
+      "Bash(Select-Object Name)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\" | ForEach-Object { $_.Name })",
+      "PowerShell($body = '{\"username\":\"admin\",\"password\":\"Admin1234!\"}'; $response = Invoke-WebRequest -Uri \"https://backend-t07u.onrender.com/api/auth/login\" -Method POST -Body $body -ContentType \"application/json\" -ErrorAction SilentlyContinue; Write-Output \"Status: $\\($response.StatusCode\\)\"; Write-Output \"Body: $\\($response.Content\\)\")",
+      "PowerShell(git *)",
+      "PowerShell(gh repo *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\Archivos Claude Desing\" | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\desktopapp\\\\src\\\\main\\\\resources\" -Recurse | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Chupeete\\\\Desktop\\\\Proyectos\\\\Proyecto Buscando El Ser\\\\desktopapp\\\\src\\\\main\\\\resources\\\\\", \"\"\\) })"
     ]
   }
 }

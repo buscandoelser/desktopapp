@@ -29,12 +29,13 @@ public class AuthService {
                 String responseBody = response.body().string();
 
                 if (!response.isSuccessful()) {
+                    System.err.println("[DEBUG LOGIN] HTTP " + response.code() + " | Body: " + responseBody);
                     try {
                         JsonNode node = mapper.readTree(responseBody);
                         String msg = node.has("mensaje") ? node.get("mensaje").asText() : "Error de autenticación (HTTP " + response.code() + ")";
-                        return LoginResult.error(msg);
+                        return LoginResult.error("[HTTP " + response.code() + "] " + msg + " | RAW: " + responseBody);
                     } catch (Exception ex) {
-                        return LoginResult.error("Error HTTP " + response.code() + " — respuesta inesperada del servidor");
+                        return LoginResult.error("Error HTTP " + response.code() + " | RAW: " + responseBody);
                     }
                 }
 

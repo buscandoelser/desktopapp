@@ -39,6 +39,12 @@ public class LoginController {
     }
 
     @FXML
+    private void onEyeClick() {
+        chkMostrarPassword.setSelected(!chkMostrarPassword.isSelected());
+        onTogglePassword();
+    }
+
+    @FXML
     private void onTogglePassword() {
         if (chkMostrarPassword.isSelected()) {
             txtPasswordVisible.setText(txtPassword.getText());

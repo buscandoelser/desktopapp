@@ -1,90 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.SVGPath?>
 
-<HBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.gestion.controllers.LoginController"
-      styleClass="login-split-root"
-      prefWidth="860" prefHeight="560">
+<!--
+    Traducción directa del HTML Login.html.
+    HTML: position:absolute layers sobre 1500×900 viewBox.
+    JavaFX: StackPane root (equivalente), SVGPaths escalados ×0.573/×0.622.
+-->
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.gestion.controllers.LoginController"
+           prefWidth="860" prefHeight="560"
+           styleClass="login-split-root">
 
-    <!-- PANEL IZQUIERDO — Formulario -->
-    <StackPane HBox.hgrow="ALWAYS" prefWidth="430" styleClass="login-left-panel">
+    <!-- ─── CAPA 1: bandas SVG en Pane (no StackPane) ───
+         Pane posiciona hijos en layoutX=0,layoutY=0 sin ajustar por layoutBounds.minX.
+         Si estuvieran directo en StackPane con alignment, el StackPane desplaza el nodo
+         por layoutBounds.minX>0 y todo queda corrido a la izquierda.
+         Cierre en x=1000, y=-100/700 → fuera del viewport → sin líneas rectas visibles. -->
+    <Pane prefWidth="860" prefHeight="560" mouseTransparent="true"
+          style="-fx-background-color: transparent;">
 
-        <!-- Decoración esquinas -->
-        <Region styleClass="login-deco-tl" StackPane.alignment="TOP_LEFT"
-                prefWidth="110" prefHeight="110"/>
-        <Region styleClass="login-deco-br" StackPane.alignment="BOTTOM_RIGHT"
-                prefWidth="90" prefHeight="90"/>
+        <!-- g3 — lightest back -->
+        <SVGPath styleClass="login-wave-back"
+                 content="M711,-100 C791,112 309,336 355,700 L1000,700 L1000,-100 Z"/>
 
-        <!-- Contenido centrado -->
-        <VBox alignment="CENTER" spacing="24" styleClass="login-left-form">
+        <!-- g2 — mid -->
+        <SVGPath styleClass="login-wave-mid"
+                 content="M763,-100 C843,124 390,361 424,700 L1000,700 L1000,-100 Z"/>
 
-            <!-- Logo -->
-            <ImageView fitWidth="140" preserveRatio="true" smooth="true">
-                <image>
-                    <Image url="@../logo-login.jpeg"/>
-                </image>
+        <!-- g1 — darkest front -->
+        <SVGPath styleClass="login-wave-front"
+                 content="M814,-100 C894,137 470,386 493,700 L1000,700 L1000,-100 Z"/>
+    </Pane>
+
+    <!-- ─── CAPA 2: watermark (HTML: .watermark, bottom:2% right:4% width:28%) ─── -->
+    <ImageView fitWidth="240" fitHeight="240"
+               preserveRatio="true" smooth="true"
+               opacity="0.18"
+               StackPane.alignment="BOTTOM_RIGHT"
+               style="-fx-translate-x: -34; -fx-translate-y: -11;">
+        <image><Image url="@../logoLogin.png"/></image>
+    </ImageView>
+
+    <!-- ─── CAPA 3: formulario (HTML: .left — position:absolute inset:0 padding:44px 56px) ─── -->
+    <VBox prefWidth="860" prefHeight="560"
+          styleClass="login-left-layer"
+          StackPane.alignment="TOP_LEFT">
+
+        <!-- Brand (HTML: .brand img width:88 height:88) -->
+        <HBox alignment="CENTER_LEFT" styleClass="login-brand-box">
+            <ImageView fitHeight="88" preserveRatio="true" smooth="true">
+                <image><Image url="@../logo-buscando-ser.png"/></image>
             </ImageView>
+        </HBox>
 
-            <!-- Campo usuario -->
-            <TextField fx:id="txtUsuario"
-                       promptText="Usuario"
-                       styleClass="login-input"
-                       maxWidth="300"/>
+        <!-- Spacer top → centra el form verticalmente (HTML: margin-top:auto) -->
+        <Region VBox.vgrow="ALWAYS"/>
 
-            <!-- Campo contraseña -->
-            <StackPane maxWidth="300">
+        <!-- Form-wrap (HTML: .form-wrap max-width:440px) -->
+        <VBox spacing="16" maxWidth="440" styleClass="login-form-wrap">
+
+            <Label text="¡Bienvenido al sistema!"
+                   styleClass="login-left-title"
+                   wrapText="true" maxWidth="400"/>
+            <Label text="Ingresá tus credenciales para continuar."
+                   styleClass="login-left-subtitle"/>
+
+            <Region prefHeight="4"/>
+
+            <!-- Campo usuario (HTML: .field con icono SVG lead) -->
+            <StackPane styleClass="login-field" maxWidth="440">
+                <TextField fx:id="txtUsuario"
+                           promptText="Usuario o correo electrónico"
+                           styleClass="login-input"/>
+                <Label text="👤" styleClass="login-field-icon"
+                       StackPane.alignment="CENTER_LEFT"/>
+            </StackPane>
+
+            <!-- Campo contraseña + ojo -->
+            <StackPane styleClass="login-field" maxWidth="440">
                 <PasswordField fx:id="txtPassword"
                                promptText="Contraseña"
                                styleClass="login-input"/>
                 <TextField fx:id="txtPasswordVisible"
                            promptText="Contraseña"
                            styleClass="login-input"/>
+                <Label text="🔒" styleClass="login-field-icon"
+                       StackPane.alignment="CENTER_LEFT"/>
+                <Button onAction="#onEyeClick" text="👁"
+                        styleClass="login-eye-btn"
+                        StackPane.alignment="CENTER_RIGHT"/>
             </StackPane>
 
-            <!-- Checkbox oculto — requerido por el controlador -->
+            <!-- CheckBox oculto — requerido por controller -->
             <CheckBox fx:id="chkMostrarPassword"
                       visible="false" managed="false"
                       onAction="#onTogglePassword"/>
 
-            <!-- Mensaje de error -->
-            <Label fx:id="lblError"
-                   styleClass="login-error"
-                   wrapText="true"
-                   maxWidth="300"/>
+            <!-- Error (HTML: .error) -->
+            <Label fx:id="lblError" styleClass="login-error"
+                   wrapText="true" maxWidth="440"/>
 
-            <!-- Botón -->
+            <!-- Botón login (HTML: .btn-login pill gradient) -->
             <Button fx:id="btnLogin"
-                    text="Iniciar Sesión"
+                    text="Iniciar sesión"
                     onAction="#onLogin"
                     styleClass="login-btn"
-                    prefWidth="300"
                     defaultButton="true"/>
 
-            <!-- Spinner de carga -->
+            <!-- Spinner -->
             <ProgressIndicator fx:id="progressIndicator"
-                               prefWidth="32" prefHeight="32"
+                               prefWidth="30" prefHeight="30"
                                styleClass="login-progress"/>
-
         </VBox>
-    </StackPane>
 
-    <!-- PANEL DERECHO — Imagen con overlay dorado -->
-    <StackPane HBox.hgrow="ALWAYS" prefWidth="430" styleClass="login-right-panel">
+        <!-- Spacer bottom (HTML: margin-bottom:auto) -->
+        <Region VBox.vgrow="ALWAYS"/>
 
-        <!-- Imagen de fondo -->
-        <ImageView fitWidth="430" fitHeight="560">
-            <image>
-                <Image url="@../login-bg.jpeg"/>
-            </image>
-        </ImageView>
+    </VBox>
 
-
-
-    </StackPane>
-
-</HBox>
+</StackPane>
