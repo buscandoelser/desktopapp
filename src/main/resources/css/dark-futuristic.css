@@ -69,7 +69,7 @@
 
 /* Contenedor campo (HTML: .field border-radius:999px bg:#FFF8EC) */
 .login-field {
-    -fx-pref-width: 440;
+    -fx-pref-width: 320;
 }
 
 /* Input pill (HTML: .field input — padding:14 18 14 50) */
