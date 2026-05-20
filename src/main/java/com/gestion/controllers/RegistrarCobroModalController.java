@@ -319,6 +319,8 @@ public class RegistrarCobroModalController {
         int mes  = indexOfMes(cmbMesGenerar.getValue()) + 1;
         Interno internoSel = cmbInternoGenerar.getValue();
         Integer internoId  = internoSel != null ? internoSel.getId() : null;
+        String periodo = MESES_NOMBRE[mes - 1] + " " + anio;
+        String nombreInterno = internoSel != null ? internoSel.getNombreCompleto().trim() : null;
 
         setLoading(true);
         lblResultadoGenerar.setText("Generando cuotas...");
@@ -327,21 +329,62 @@ public class RegistrarCobroModalController {
             .supplyAsync(() -> CobranzasService.generarMes(anio, mes, internoId))
             .thenAcceptAsync(result -> {
                 setLoading(false);
-                if (result.success) {
-                    String msg = extraerMensaje(result.data);
-                    lblResultadoGenerar.setText(msg);
-                    AlertHelper.exito("Cuotas generadas correctamente.");
-                    if (onExito != null) onExito.run();
-                } else {
+                if (!result.success) {
                     lblResultadoGenerar.setText("Error: " + result.errorMensaje);
                     AlertHelper.error("Error al generar cuotas: " + result.errorMensaje);
+                    return;
                 }
+
+                JsonNode data   = result.data;
+                int creadas     = intDe(data, "creadas", "cuotas_creadas", "generadas");
+                int omitidas    = intDe(data, "omitidas", "ya_existentes", "existentes", "duplicadas");
+                String mensaje  = data != null && data.has("mensaje") ? data.get("mensaje").asText() : null;
+
+                if (creadas == 0 && omitidas > 0) {
+                    String txt = nombreInterno != null
+                            ? "La cuota de " + periodo + " para " + nombreInterno + " ya estaba generada."
+                            : "Las cuotas de " + periodo + " ya estaban generadas (" + omitidas + " omitidas).";
+                    lblResultadoGenerar.setText(txt);
+                    AlertHelper.info(txt);
+                } else if (creadas > 0 && omitidas > 0) {
+                    String txt = "Se generaron " + creadas + " cuotas. " + omitidas + " ya existían y fueron omitidas.";
+                    lblResultadoGenerar.setText(txt);
+                    AlertHelper.exito(txt);
+                } else if (creadas > 0) {
+                    String txt = nombreInterno != null
+                            ? "Cuota de " + periodo + " generada para " + nombreInterno + "."
+                            : "Cuotas generadas: " + creadas + " (" + periodo + ").";
+                    lblResultadoGenerar.setText(txt);
+                    AlertHelper.exito(txt);
+                } else {
+                    String txt = mensaje != null ? mensaje : "Operación completada sin cambios.";
+                    lblResultadoGenerar.setText(txt);
+                    AlertHelper.info(txt);
+                }
+
+                if (onExito != null) onExito.run();
             }, Platform::runLater);
+    }
+
+    private int intDe(JsonNode node, String... keys) {
+        if (node == null) return 0;
+        for (String k : keys) {
+            if (node.has(k) && node.get(k).isNumber()) return node.get(k).asInt();
+        }
+        return 0;
     }
 
     @FXML
     private void onCancelar() {
         cerrar();
+    }
+
+    @FXML
+    private void onLimpiarInternoGenerar() {
+        cmbInternoGenerar.getSelectionModel().clearSelection();
+        cmbInternoGenerar.setValue(null);
+        lblResultadoGenerar.setText("");
+        actualizarBoton();
     }
 
     // ── Helpers ───────────────────────────────────────────────

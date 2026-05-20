@@ -68,34 +68,34 @@ public class ConfigService {
         }
     }
 
-    // ── GET /config/interes ────────────────────────────────────
-    public static ServiceResult<JsonNode> getInteres() {
+    // ── GET /config/mora ───────────────────────────────────────
+    public static ServiceResult<JsonNode> getMora() {
         try {
-            Request req = authBuilder(AppConfig.API_BASE_URL + "/config/interes").get().build();
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/config/mora").get().build();
             try (Response response = client.newCall(req).execute()) {
                 JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
                 return ServiceResult.success(node, 1);
             }
         } catch (Exception e) {
-            System.err.println("[getInteres] " + e.getMessage());
+            System.err.println("[getMora] " + e.getMessage());
             return ServiceResult.error(e.getMessage());
         }
     }
 
-    // ── POST /config/interes ───────────────────────────────────
-    public static ServiceResult<JsonNode> setInteres(String tasa) {
+    // ── POST /config/mora ──────────────────────────────────────
+    public static ServiceResult<JsonNode> setMora(String monto) {
         try {
-            Map<String, Object> datos = Map.of("tasa", tasa);
+            Map<String, Object> datos = Map.of("monto", monto);
             RequestBody body = RequestBody.create(mapper.writeValueAsString(datos), JSON_TYPE);
-            Request req = authBuilder(AppConfig.API_BASE_URL + "/config/interes").post(body).build();
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/config/mora").post(body).build();
             try (Response response = client.newCall(req).execute()) {
                 JsonNode node = safeReadJson(response);
                 if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
                 return ServiceResult.success(node, 1);
             }
         } catch (Exception e) {
-            System.err.println("[setInteres] " + e.getMessage());
+            System.err.println("[setMora] " + e.getMessage());
             return ServiceResult.error(e.getMessage());
         }
     }

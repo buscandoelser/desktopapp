@@ -1182,6 +1182,62 @@
     -fx-wrap-text: true;
 }
 
+/* ─────────────────── TAB PANE ─────────────────── */
+.config-tabs {
+    -fx-background-color: transparent;
+    -fx-tab-min-width: 120;
+}
+
+.config-tabs > .tab-header-area {
+    -fx-padding: 0;
+}
+
+.config-tabs > .tab-header-area > .tab-header-background {
+    -fx-background-color: #FFFCF5;
+    -fx-border-color: transparent transparent #E8DCBE transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.config-tabs > .tab-header-area > .headers-region > .tab {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+
+.config-tabs > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
+    -fx-text-fill: #7C6B52;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+}
+
+.config-tabs > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-color: linear-gradient(to bottom, transparent 0%, transparent 90%, #F4B23A 90%, #F4B23A 100%);
+}
+
+.config-tabs > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
+    -fx-text-fill: #3A2E1F;
+    -fx-font-weight: bold;
+}
+
+.config-tabs > .tab-header-area > .headers-region > .tab:hover > .tab-container > .tab-label {
+    -fx-text-fill: #3A2E1F;
+}
+
+.config-tabs > .tab-content-area {
+    -fx-background-color: transparent;
+    -fx-padding: 16 0 0 0;
+}
+
+.config-tabs .tab-close-button {
+    -fx-background-color: transparent;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
 /* ─────────────────── LINK BUTTON ─────────────────── */
 .btn-link {
     -fx-background-color: transparent;

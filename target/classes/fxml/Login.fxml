@@ -43,10 +43,10 @@
                preserveRatio="true" smooth="true"
                opacity="0.1"
                StackPane.alignment="BOTTOM_RIGHT"
-               style="-fx-translate-x: -22; -fx-translate-y: -10; -fx-effect: coloradjust(0.0, -1.0, 1.0, 0.0);">
+               style="-fx-translate-x: -22; -fx-translate-y: -10;">
         <image><Image url="@../logoLogin.png"/></image>
         <effect>
-            <ColorAdjust brightness="1.0" />
+            <ColorAdjust hue="0.0" saturation="-1.0" brightness="1.0" contrast="0.0"/>
         </effect>
     </ImageView>
 
@@ -126,5 +126,13 @@
         <Region VBox.vgrow="ALWAYS"/>
 
     </VBox>
+
+    <!-- ─── CAPA 4 (overlay): barra de título propia (UNDECORATED stage) ─── -->
+    <HBox fx:id="loginTitleBar" prefHeight="34" maxHeight="34"
+          alignment="CENTER_RIGHT"
+          StackPane.alignment="TOP_CENTER"
+          style="-fx-background-color: transparent;">
+        <HBox fx:id="loginWindowControlsHost" alignment="CENTER_RIGHT"/>
+    </HBox>
 
 </StackPane>

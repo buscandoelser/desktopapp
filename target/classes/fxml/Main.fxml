@@ -6,14 +6,15 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="rootPane"
             fx:controller="com.gestion.controllers.MainController"
             styleClass="root-dark"
             prefWidth="1280" prefHeight="800">
 
-    <!-- ── HEADER SUPERIOR (64px) ────────────────────────────── -->
+    <!-- ── HEADER SUPERIOR (64px) ─────────────────────────────────────── -->
     <top>
-        <HBox styleClass="header" prefHeight="64" alignment="CENTER_LEFT" spacing="16">
-            <padding><Insets left="24" right="24"/></padding>
+        <HBox fx:id="header" styleClass="header" prefHeight="64" alignment="CENTER_LEFT" spacing="16">
+            <padding><Insets left="24" right="0"/></padding>
 
             <Label text="Buscando El Ser" styleClass="header-logo"/>
 
@@ -27,76 +28,19 @@
             <Button text="Salir"
                     onAction="#onCerrarSesion"
                     styleClass="btn-logout"/>
+
+            <!-- Window controls (min / max / close) injected by controller -->
+            <HBox fx:id="windowControlsHost" alignment="CENTER_RIGHT"/>
         </HBox>
     </top>
 
-    <!-- ── SIDEBAR IZQUIERDO (248px) ─────────────────────────── -->
-    <left>
-        <VBox fx:id="sidebar" styleClass="sidebar" prefWidth="248" spacing="2">
-            <padding><Insets top="22" bottom="16" left="14" right="14"/></padding>
-
-            <Label text="NAVEGACIÓN" styleClass="sidebar-section-label"/>
-
-            <Button fx:id="btnDashboard"
-                    text="🏠  Panel"
-                    onAction="#onDashboard"
-                    styleClass="sidebar-btn"
-                    maxWidth="Infinity"/>
-
-            <Button fx:id="btnInternos"
-                    text="👥  Internos"
-                    onAction="#onInternos"
-                    styleClass="sidebar-btn"
-                    maxWidth="Infinity"/>
-
-            <Button fx:id="btnCobranzas"
-                    text="💰  Cobranzas"
-                    onAction="#onCobranzas"
-                    styleClass="sidebar-btn"
-                    maxWidth="Infinity"/>
-
-            <Button fx:id="btnPagos"
-                    text="💳  Pagos"
-                    onAction="#onPagos"
-                    styleClass="sidebar-btn"
-                    maxWidth="Infinity"/>
-
-            <Button fx:id="btnReportes"
-                    text="📊  Reportes"
-                    onAction="#onReportes"
-                    styleClass="sidebar-btn"
-                    maxWidth="Infinity"/>
-
-            <Region VBox.vgrow="ALWAYS"/>
-
-            <!-- Tarjeta de capacidad -->
-            <VBox styleClass="sidebar-capacity-card" spacing="6">
-                <padding><Insets top="4" bottom="4" left="0" right="0"/></padding>
-                <Label text="Casa Central" styleClass="sidebar-card-title"/>
-                <HBox alignment="CENTER_LEFT" spacing="6">
-                    <Region styleClass="status-dot"/>
-                    <Label fx:id="lblCapacidadMeta" text="— internos · — plazas libres" styleClass="sidebar-card-meta"/>
-                </HBox>
-                <ProgressBar fx:id="pbCapacidad" progress="0" maxWidth="Infinity" styleClass="capacity-bar"/>
-                <Label fx:id="lblCapacidadPct" text="Cargando..." styleClass="sidebar-card-foot"/>
-            </VBox>
-
-            <Separator styleClass="sidebar-separator"/>
-
-            <Button fx:id="btnConfiguracion"
-                    text="⚙  Configuración"
-                    onAction="#onConfiguracion"
-                    styleClass="sidebar-btn"
-                    maxWidth="Infinity"/>
-
-        </VBox>
-    </left>
-
-    <!-- ── ÁREA DE CONTENIDO ─────────────────────────────────── -->
+    <!-- ── ÁREA DE CONTENIDO ──────────────────────────────────────────── -->
     <center>
         <StackPane fx:id="contenidoPrincipal" styleClass="content-area">
-            <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
+            <padding><Insets top="24" right="32" bottom="16" left="32"/></padding>
         </StackPane>
     </center>
+
+    <!-- ── DOCK INFERIOR — inyectado programáticamente en MainController ── -->
 
 </BorderPane>

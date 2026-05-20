@@ -78,11 +78,11 @@ public class ConfiguracionController {
                 lblCuotaVigencia.setText(desde.isEmpty() ? "" : "Vigente desde: " + desde);
             }, Platform::runLater);
 
-        CompletableFuture.supplyAsync(ConfigService::getInteres)
+        CompletableFuture.supplyAsync(ConfigService::getMora)
             .thenAcceptAsync(r -> {
                 if (!r.success) { lblInteresActual.setText("—"); return; }
-                String tasa = r.data.path("tasa").asText("—");
-                lblInteresActual.setText(tasa);
+                String monto = r.data.path("monto").asText(r.data.path("valor").asText("—"));
+                lblInteresActual.setText("—".equals(monto) ? "—" : "$" + formatMonto(monto));
             }, Platform::runLater);
 
         CompletableFuture.supplyAsync(ConfigService::getVencimiento)
@@ -111,14 +111,21 @@ public class ConfiguracionController {
     }
 
     @FXML
-    private void onGuardarInteres() {
-        String tasa = txtTasa.getText().trim();
-        if (tasa.isEmpty()) { AlertHelper.error("Ingresá la nueva tasa de interés."); return; }
+    private void onGuardarMora() {
+        String monto = txtTasa.getText().trim();
+        if (monto.isEmpty()) { AlertHelper.error("Ingresá el nuevo monto de mora."); return; }
+        try {
+            double v = Double.parseDouble(monto);
+            if (v < 0) { AlertHelper.error("El monto de mora no puede ser negativo."); return; }
+        } catch (NumberFormatException e) {
+            AlertHelper.error("Monto inválido. Usá solo números, ej: 50000.00");
+            return;
+        }
 
-        CompletableFuture.supplyAsync(() -> ConfigService.setInteres(tasa))
+        CompletableFuture.supplyAsync(() -> ConfigService.setMora(monto))
             .thenAcceptAsync(r -> {
                 if (!r.success) { AlertHelper.error("Error: " + r.errorMensaje); return; }
-                AlertHelper.info("Tasa de interés actualizada correctamente.");
+                AlertHelper.info("Monto de mora actualizado correctamente.");
                 txtTasa.clear();
                 cargarParametros();
             }, Platform::runLater);

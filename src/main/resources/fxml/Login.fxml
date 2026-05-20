@@ -43,10 +43,10 @@
                preserveRatio="true" smooth="true"
                opacity="0.1"
                StackPane.alignment="BOTTOM_RIGHT"
-               style="-fx-translate-x: -22; -fx-translate-y: -10; -fx-effect: coloradjust(0.0, -1.0, 1.0, 0.0);">
+               style="-fx-translate-x: -22; -fx-translate-y: -10;">
         <image><Image url="@../logoLogin.png"/></image>
         <effect>
-            <ColorAdjust brightness="1.0" />
+            <ColorAdjust hue="0.0" saturation="-1.0" brightness="1.0" contrast="0.0"/>
         </effect>
     </ImageView>
 
