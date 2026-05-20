@@ -5,12 +5,12 @@
 
 /* ── Root container ─────────────────────────────────────────────── */
 .dock-root {
-    -fx-background-color: #111111;
-    -fx-border-color: #2A2A2A transparent transparent transparent;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E5E5E5 transparent transparent transparent;
     -fx-border-width: 1 0 0 0;
     -fx-pref-height: 72;
     -fx-min-height: 72;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.60), 18, 0, 0, -6);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.10), 14, 0, 0, -4);
 }
 
 .dock-stack {
@@ -40,12 +40,12 @@
 
 /* orange tinted pill behind active item */
 .dock-cell-active {
-    -fx-background-color: rgba(255, 107, 26, 0.18);
+    -fx-background-color: rgba(255, 107, 26, 0.14);
     -fx-background-radius: 14;
     -fx-border-color: rgba(255, 107, 26, 0.50);
     -fx-border-width: 1;
     -fx-border-radius: 14;
-    -fx-effect: dropshadow(gaussian, rgba(255, 107, 26, 0.30), 12, 0, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(255, 107, 26, 0.25), 12, 0, 0, 0);
 }
 
 /* ── Icon wrapper ───────────────────────────────────────────────── */
@@ -95,7 +95,7 @@
 
 /* ── Compact capacity chip (lives in the header) ────────────────── */
 .header-capacity-chip {
-    -fx-background-color: #2A2A2A;
+    -fx-background-color: #E5E5E5;
     -fx-background-radius: 20;
     -fx-padding: 5 12 5 10;
     -fx-spacing: 7;
@@ -105,19 +105,19 @@
 .header-cap-meta {
     -fx-font-family: "Segoe UI", "Inter", Arial, sans-serif;
     -fx-font-size: 11.5px;
-    -fx-text-fill: #A1A1AA;
+    -fx-text-fill: #525252;
 }
 
 .capacity-bar-mini {
     -fx-pref-height: 4;
     -fx-pref-width: 90;
-    -fx-background-color: #333333;
+    -fx-background-color: #E5E5E5;
     -fx-background-radius: 2;
     -fx-accent: #FF6B1A;
 }
 
 .capacity-bar-mini > .track {
-    -fx-background-color: #333333;
+    -fx-background-color: #E5E5E5;
     -fx-background-radius: 2;
 }
 
@@ -132,9 +132,9 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 .capacity-ring-card {
-    -fx-background-color: #1A1A1A;
+    -fx-background-color: #FFFFFF;
     -fx-background-radius: 14;
-    -fx-border-color: #2A2A2A;
+    -fx-border-color: #E5E5E5;
     -fx-border-width: 1;
     -fx-border-radius: 14;
     -fx-padding: 20 22 20 22;
@@ -148,33 +148,33 @@
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: 700;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #0A0A0A;
 }
 
 .capacity-ring-hint {
     -fx-font-size: 11px;
-    -fx-text-fill: #52525B;
+    -fx-text-fill: #525252;
 }
 
 .capacity-ring-percent {
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 34px;
     -fx-font-weight: 800;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #0A0A0A;
 }
 
 .capacity-ring-sub {
     -fx-font-family: "Segoe UI", "Inter", Arial, sans-serif;
     -fx-font-size: 10.5px;
-    -fx-text-fill: #A1A1AA;
+    -fx-text-fill: #525252;
     -fx-padding: 2 0 0 0;
 }
 
 /* Legend rows under the ring */
 .capacity-legend-dot.used   { -fx-background-color: #FF6B1A; }
-.capacity-legend-dot.free   { -fx-background-color: #2A2A2A; }
+.capacity-legend-dot.free   { -fx-background-color: #E5E5E5; }
 .capacity-legend-dot.deuda  { -fx-background-color: #EF4444; }
-.capacity-legend-dot.al-dia { -fx-background-color: #2A2A2A; }
+.capacity-legend-dot.al-dia { -fx-background-color: #E5E5E5; }
 
 .capacity-legend-row {
     -fx-alignment: CENTER_LEFT;
@@ -191,19 +191,19 @@
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: 500;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #0A0A0A;
 }
 
 .capacity-legend-value {
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 24px;
     -fx-font-weight: 800;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #0A0A0A;
 }
 
 .capacity-total-label {
     -fx-font-size: 12px;
-    -fx-text-fill: #A1A1AA;
+    -fx-text-fill: #525252;
     -fx-padding: 10 0 0 0;
 }
 

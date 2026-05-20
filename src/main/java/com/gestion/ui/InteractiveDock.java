@@ -94,9 +94,7 @@ public class InteractiveDock extends BorderPane {
         this.items = List.copyOf(items);
         getStyleClass().add("dock-root");
 
-        String css = getClass().getResource("/css/interactive-dock.css") != null
-                ? getClass().getResource("/css/interactive-dock.css").toExternalForm() : null;
-        if (css != null) getStylesheets().add(css);
+        // Stylesheets aplicados a nivel de Scene vía ThemeManager — no cargamos acá
 
         buildIndicator();
         buildItems();

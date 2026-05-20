@@ -145,6 +145,31 @@
                                 </VBox>
                             </VBox>
 
+                            <!-- Card: Tema -->
+                            <VBox styleClass="card" spacing="0">
+                                <HBox styleClass="card-head" alignment="CENTER_LEFT" spacing="12">
+                                    <Label text="🎨" style="-fx-font-size: 20px;"/>
+                                    <Label text="Tema de la interfaz" styleClass="card-title"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="lblTemaActual" text="—"
+                                           styleClass="stat-value" style="-fx-font-size: 18px;"/>
+                                </HBox>
+                                <VBox spacing="14" style="-fx-padding: 16 18 20 18;">
+                                    <Label text="Activá el switch para alternar entre modo oscuro y modo claro. La preferencia se guarda en tu equipo."
+                                           styleClass="label-secondary"
+                                           wrapText="true"/>
+                                    <HBox spacing="14" alignment="CENTER_LEFT">
+                                        <Label text="☀  Claro" styleClass="theme-switch-label"/>
+                                        <HBox fx:id="themeSwitch"
+                                              styleClass="theme-switch"
+                                              onMouseClicked="#onToggleTheme">
+                                            <Region styleClass="theme-switch-thumb"/>
+                                        </HBox>
+                                        <Label text="🌙  Oscuro" styleClass="theme-switch-label"/>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
                         </VBox>
                     </content>
                 </ScrollPane>

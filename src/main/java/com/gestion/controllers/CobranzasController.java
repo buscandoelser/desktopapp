@@ -4,6 +4,7 @@ import com.gestion.config.AppConfig;
 import com.gestion.models.Cuota;
 import com.gestion.services.CobranzasService;
 import com.gestion.utils.AlertHelper;
+import com.gestion.utils.ThemeManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -241,8 +242,7 @@ public class CobranzasController {
             modal.setTitle("Registrar cobro");
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/css/dark-futuristic.css").toExternalForm());
+            ThemeManager.apply(scene);
             modal.setScene(scene);
             modal.setMinWidth(560);
             modal.setMinHeight(640);

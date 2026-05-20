@@ -1,6 +1,7 @@
 package com.gestion;
 
 import com.gestion.config.AppConfig;
+import com.gestion.utils.ThemeManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,8 +29,7 @@ public class App extends Application {
         Parent root = loader.load();
 
         Scene scene = new Scene(root, 860, 560);
-        scene.getStylesheets().add(getClass().getResource("/css/dark-futuristic.css").toExternalForm());
-        scene.getStylesheets().add(getClass().getResource("/css/interactive-dock.css").toExternalForm());
+        ThemeManager.apply(scene);
 
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/logo-buscando-ser.png")));
         primaryStage.setTitle("Sistema de Gestión de Internos");

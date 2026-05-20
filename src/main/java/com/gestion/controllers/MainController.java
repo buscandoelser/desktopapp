@@ -5,6 +5,7 @@ import com.gestion.services.AuthService;
 import com.gestion.ui.InteractiveDock;
 import com.gestion.ui.WindowControls;
 import com.gestion.utils.AlertHelper;
+import com.gestion.utils.ThemeManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -115,12 +116,7 @@ public class MainController {
             Parent root = loader.load();
 
             Scene scene = new Scene(root, 860, 560);
-            scene.getStylesheets().add(
-                    getClass().getResource("/css/dark-futuristic.css").toExternalForm()
-            );
-            scene.getStylesheets().add(
-                    getClass().getResource("/css/interactive-dock.css").toExternalForm()
-            );
+            ThemeManager.apply(scene);
 
             Stage stage = AppConfig.getPrimaryStage();
             // Unmaximize and reset min size BEFORE applying new dimensions —

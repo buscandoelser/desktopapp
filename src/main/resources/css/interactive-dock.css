@@ -38,11 +38,11 @@
     -fx-background-color: rgba(255, 107, 26, 0.10);
 }
 
-/* orange pill behind active item */
+/* orange tinted pill behind active item */
 .dock-cell-active {
-    -fx-background-color: rgba(255, 107, 26, 0.16);
+    -fx-background-color: rgba(255, 107, 26, 0.18);
     -fx-background-radius: 14;
-    -fx-border-color: rgba(255, 107, 26, 0.45);
+    -fx-border-color: rgba(255, 107, 26, 0.50);
     -fx-border-width: 1;
     -fx-border-radius: 14;
     -fx-effect: dropshadow(gaussian, rgba(255, 107, 26, 0.30), 12, 0, 0, 0);
@@ -56,15 +56,15 @@
 
 /* ── Icon (Region with -fx-shape set inline in Java) ───────────── */
 .dock-icon {
-    -fx-background-color: #52525B;  /* zinc muted inactive */
+    -fx-background-color: #FF6B1A;
 }
 
 .dock-icon-active {
-    -fx-background-color: #FF6B1A;  /* vivid orange active */
+    -fx-background-color: #FF6B1A;
 }
 
 .dock-icon-hover {
-    -fx-background-color: #FF8438;  /* lighter orange on hover */
+    -fx-background-color: #FF8438;
 }
 
 /* ── Label ──────────────────────────────────────────────────────── */
@@ -72,7 +72,7 @@
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 10.5px;
     -fx-font-weight: 600;
-    -fx-text-fill: #A1A1AA;
+    -fx-text-fill: #FF6B1A;
     -fx-wrap-text: false;
 }
 

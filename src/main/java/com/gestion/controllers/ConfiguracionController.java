@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gestion.config.AppConfig;
 import com.gestion.services.ConfigService;
 import com.gestion.utils.AlertHelper;
+import com.gestion.utils.ThemeManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -34,6 +35,9 @@ public class ConfiguracionController {
     @FXML private Label            lblCamasActual;
     @FXML private Spinner<Integer> spinnerCamas;
 
+    @FXML private Label lblTemaActual;
+    @FXML private HBox  themeSwitch;
+
     // ── Usuarios ──────────────────────────────────────────────
     @FXML private TableView<JsonNode>         tablaUsuarios;
     @FXML private TableColumn<JsonNode, String> colUsername;
@@ -63,10 +67,25 @@ public class ConfiguracionController {
 
         configurarTablaUsuarios();
         configurarTablaAuditoria();
+        actualizarBotonesTema();
 
         cargarParametros();
         cargarUsuarios();
         cargarAuditoria();
+    }
+
+    // ── Tema ──────────────────────────────────────────────────
+    @FXML
+    private void onToggleTheme() {
+        ThemeManager.toggle();
+        actualizarBotonesTema();
+    }
+
+    private void actualizarBotonesTema() {
+        boolean dark = ThemeManager.isDark();
+        lblTemaActual.setText(dark ? "Oscuro" : "Claro");
+        themeSwitch.getStyleClass().remove("on");
+        if (dark) themeSwitch.getStyleClass().add("on");
     }
 
     // ── Parámetros ────────────────────────────────────────────

@@ -5,6 +5,7 @@ import com.gestion.models.Interno;
 import com.gestion.services.InternoService;
 import com.gestion.utils.AlertHelper;
 import com.gestion.utils.FormatHelper;
+import com.gestion.utils.ThemeManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -223,9 +224,7 @@ public class InternosController {
             modal.setTitle(interno == null ? "Nuevo Interno" : soloLectura ? "Detalle de Interno" : "Editar Interno");
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/css/dark-futuristic.css").toExternalForm()
-            );
+            ThemeManager.apply(scene);
             modal.setScene(scene);
             modal.setMinWidth(800);
             modal.setMinHeight(640);
@@ -251,9 +250,7 @@ public class InternosController {
             modal.setTitle("Dar de baja: " + interno.getNombreCompleto().trim());
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/css/dark-futuristic.css").toExternalForm()
-            );
+            ThemeManager.apply(scene);
             modal.setScene(scene);
             modal.setResizable(false);
             modal.centerOnScreen();
@@ -272,9 +269,7 @@ public class InternosController {
                 + interno.getNombreCompleto().trim() + "?\n"
                 + "El interno volverá al estado Activo.");
         alert.initOwner(AppConfig.getPrimaryStage());
-        alert.getDialogPane().getStylesheets().add(
-                getClass().getResource("/css/dark-futuristic.css").toExternalForm()
-        );
+        ThemeManager.apply(alert.getDialogPane());
         alert.getDialogPane().getStyleClass().add("root-dark");
 
         alert.showAndWait().ifPresent(btn -> {

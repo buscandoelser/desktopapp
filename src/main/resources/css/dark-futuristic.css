@@ -333,22 +333,22 @@
 }
 
 .btn-logout {
-    -fx-background-color: rgba(255,255,255,0.15);
-    -fx-text-fill: #FFFFFF;
+    -fx-background-color: rgba(255,107,26,0.10);
+    -fx-text-fill: #FF6B1A;
     -fx-font-size: 13px;
     -fx-font-weight: 700;
     -fx-padding: 8 16 8 16;
     -fx-background-radius: 8;
-    -fx-border-color: rgba(255,255,255,0.55);
+    -fx-border-color: rgba(255,107,26,0.50);
     -fx-border-radius: 8;
     -fx-border-width: 1;
     -fx-cursor: hand;
 }
 
 .btn-logout:hover {
-    -fx-border-color: #FFFFFF;
-    -fx-text-fill: #FF6B1A;
-    -fx-background-color: #FFFFFF;
+    -fx-border-color: #FF6B1A;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-color: rgba(255,107,26,0.22);
 }
 
 /* Botones de acción en filas de tabla */
@@ -538,9 +538,9 @@
 }
 
 .header-logo {
-    -fx-font-size: 18px;
+    -fx-font-size: 19px;
     -fx-font-weight: bold;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #FF6B1A;
     -fx-font-style: italic;
     -fx-font-family: "Georgia", "Times New Roman", serif;
 }
@@ -1006,9 +1006,9 @@
 
 .card-head {
     -fx-padding: 14 18 14 18;
-    -fx-background-color: linear-gradient(to right, #1F1F1F 0%, #1A1A1A 100%);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF6B1A 0%, #D4500A 100%);
     -fx-background-radius: 14 14 0 0;
-    -fx-border-color: transparent transparent #333333 transparent;
+    -fx-border-color: transparent transparent #C2520F transparent;
     -fx-border-width: 0 0 1 0;
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 12;
@@ -1016,8 +1016,13 @@
 
 .card-title {
     -fx-font-size: 14px;
-    -fx-font-weight: 700;
-    -fx-text-fill: #FF6B1A;
+    -fx-font-weight: 800;
+    -fx-text-fill: #FFFFFF;
+}
+
+.card-head .stat-value,
+.card-head .label-secondary {
+    -fx-text-fill: #FFFFFF;
 }
 
 /* ─────────────────── MINI LIST ROWS ─────────────────── */
@@ -1055,8 +1060,8 @@
 
 /* ─────────────────── REPORT CARDS ─────────────────── */
 .report-card {
-    -fx-background-color: #1A1A1A;
-    -fx-border-color: #333333;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF6B1A, #D4500A);
+    -fx-border-color: #C2520F;
     -fx-border-width: 1;
     -fx-border-radius: 14;
     -fx-background-radius: 14;
@@ -1064,15 +1069,16 @@
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 14;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.35), 14, 0, 0, 4);
 }
 
 .report-card:hover {
-    -fx-border-color: #FF6B1A;
-    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.35), 16, 0, 0, 3);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF8438, #E55F12);
+    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.55), 20, 0, 0, 6);
 }
 
 .report-card-icon {
-    -fx-background-color: rgba(255,107,26,0.15);
+    -fx-background-color: rgba(255,255,255,0.22);
     -fx-background-radius: 10;
     -fx-font-size: 18px;
     -fx-alignment: CENTER;
@@ -1084,13 +1090,13 @@
 
 .report-card-title {
     -fx-font-size: 14px;
-    -fx-font-weight: 600;
+    -fx-font-weight: 700;
     -fx-text-fill: #FFFFFF;
 }
 
 .report-card-sub {
     -fx-font-size: 12px;
-    -fx-text-fill: #A1A1AA;
+    -fx-text-fill: rgba(255,255,255,0.85);
 }
 
 /* ─────────────────── SIDEBAR CAPACITY CARD ─────────────────── */
@@ -1262,4 +1268,55 @@
 
 .btn-link:hover {
     -fx-background-color: rgba(255,107,26,0.12);
+}
+
+/* ─────────────────── THEME SWITCH ─────────────────── */
+.theme-switch {
+    -fx-pref-width: 54;
+    -fx-min-width: 54;
+    -fx-max-width: 54;
+    -fx-pref-height: 30;
+    -fx-min-height: 30;
+    -fx-max-height: 30;
+    -fx-background-color: #3F3F46;
+    -fx-background-radius: 999;
+    -fx-padding: 3;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+    -fx-border-color: #52525B;
+    -fx-border-width: 1;
+    -fx-border-radius: 999;
+}
+
+.theme-switch:hover {
+    -fx-background-color: #52525B;
+}
+
+.theme-switch.on {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF6B1A, #D4500A);
+    -fx-border-color: #FF6B1A;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.50), 10, 0, 0, 0);
+}
+
+.theme-switch.on:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF8438, #E55F12);
+}
+
+.theme-switch-thumb {
+    -fx-pref-width: 22;
+    -fx-pref-height: 22;
+    -fx-min-width: 22;
+    -fx-min-height: 22;
+    -fx-max-width: 22;
+    -fx-max-height: 22;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 999;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.40), 4, 0, 0, 1);
+}
+
+.theme-switch-label {
+    -fx-text-fill: #A1A1AA;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
 }

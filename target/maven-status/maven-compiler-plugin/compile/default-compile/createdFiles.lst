@@ -12,9 +12,11 @@ com\gestion\utils\FormatHelper.class
 com\gestion\controllers\CobranzasController$2.class
 com\gestion\controllers\InternosController$2.class
 com\gestion\controllers\InternoFormController.class
+com\gestion\utils\ThemeManager$Theme.class
 com\gestion\ui\CapacityRing.class
 com\gestion\controllers\InternosController.class
 com\gestion\utils\AlertHelper$TipoToast.class
+com\gestion\utils\ThemeManager.class
 com\gestion\services\AuthService$LoginResult.class
 com\gestion\controllers\BajaModalController.class
 com\gestion\models\ContactoFamiliar.class

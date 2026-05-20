@@ -4,6 +4,7 @@ import com.gestion.config.AppConfig;
 import com.gestion.models.Egreso;
 import com.gestion.services.CobranzasService;
 import com.gestion.utils.AlertHelper;
+import com.gestion.utils.ThemeManager;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -127,8 +128,7 @@ public class PagosController {
             modal.setTitle("Registrar egreso");
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(
-                    getClass().getResource("/css/dark-futuristic.css").toExternalForm());
+            ThemeManager.apply(scene);
             modal.setScene(scene);
             modal.setMinWidth(520);
             modal.setMinHeight(480);
