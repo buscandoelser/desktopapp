@@ -14,7 +14,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,15 +23,16 @@ public class ConfiguracionController {
 
     // ── Parámetros ────────────────────────────────────────────
     @FXML private Label      lblCuotaActual;
-    @FXML private Label      lblCuotaVigencia;
     @FXML private TextField  txtCuotaMonto;
-    @FXML private DatePicker dpVigenciaDesde;
 
     @FXML private Label     lblInteresActual;
     @FXML private TextField txtTasa;
 
     @FXML private Label        lblVencimientoActual;
     @FXML private Spinner<Integer> spinnerDia;
+
+    @FXML private Label            lblCamasActual;
+    @FXML private Spinner<Integer> spinnerCamas;
 
     // ── Usuarios ──────────────────────────────────────────────
     @FXML private TableView<JsonNode>         tablaUsuarios;
@@ -58,6 +58,9 @@ public class ConfiguracionController {
         spinnerDia.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 28, 10));
         spinnerDia.setEditable(true);
 
+        spinnerCamas.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 500, 40));
+        spinnerCamas.setEditable(true);
+
         configurarTablaUsuarios();
         configurarTablaAuditoria();
 
@@ -71,11 +74,9 @@ public class ConfiguracionController {
     private void cargarParametros() {
         CompletableFuture.supplyAsync(ConfigService::getCuota)
             .thenAcceptAsync(r -> {
-                if (!r.success) { lblCuotaActual.setText("Error"); return; }
-                String monto = r.data.path("monto").asText(r.data.path("valor").asText("—"));
-                String desde = r.data.path("vigencia_desde").asText(r.data.path("vigente_desde").asText(""));
-                lblCuotaActual.setText("$" + formatMonto(monto));
-                lblCuotaVigencia.setText(desde.isEmpty() ? "" : "Vigente desde: " + desde);
+                if (!r.success) { lblCuotaActual.setText("—"); return; }
+                String monto = r.data.path("monto").asText(r.data.path("valor").asText(""));
+                lblCuotaActual.setText(monto.isEmpty() ? "—" : "$" + formatMonto(monto));
             }, Platform::runLater);
 
         CompletableFuture.supplyAsync(ConfigService::getMora)
@@ -91,21 +92,38 @@ public class ConfiguracionController {
                 String dia = r.data.path("dia").asText("—");
                 lblVencimientoActual.setText(dia);
             }, Platform::runLater);
+
+        CompletableFuture.supplyAsync(ConfigService::getCamas)
+            .thenAcceptAsync(r -> {
+                if (!r.success) { lblCamasActual.setText("—"); return; }
+                int total = r.data.path("total").asInt(r.data.path("valor").asInt(40));
+                lblCamasActual.setText(String.valueOf(total));
+                spinnerCamas.getValueFactory().setValue(total);
+            }, Platform::runLater);
+    }
+
+    @FXML
+    private void onGuardarCamas() {
+        Integer total = spinnerCamas.getValue();
+        if (total == null || total < 1) { AlertHelper.error("Total de camas inválido."); return; }
+        CompletableFuture.supplyAsync(() -> ConfigService.setCamas(total))
+            .thenAcceptAsync(r -> {
+                if (!r.success) { AlertHelper.error("Error: " + r.errorMensaje); return; }
+                AlertHelper.info("Total de camas actualizado a: " + total);
+                cargarParametros();
+            }, Platform::runLater);
     }
 
     @FXML
     private void onGuardarCuota() {
         String monto = txtCuotaMonto.getText().trim();
         if (monto.isEmpty()) { AlertHelper.error("Ingresá el nuevo monto de la cuota."); return; }
-        LocalDate fecha = dpVigenciaDesde.getValue();
-        if (fecha == null) { AlertHelper.error("Seleccioná la fecha de vigencia."); return; }
 
-        CompletableFuture.supplyAsync(() -> ConfigService.setCuota(monto, fecha.toString()))
+        CompletableFuture.supplyAsync(() -> ConfigService.setCuota(monto))
             .thenAcceptAsync(r -> {
                 if (!r.success) { AlertHelper.error("Error: " + r.errorMensaje); return; }
                 AlertHelper.info("Cuota actualizada correctamente.");
                 txtCuotaMonto.clear();
-                dpVigenciaDesde.setValue(null);
                 cargarParametros();
             }, Platform::runLater);
     }

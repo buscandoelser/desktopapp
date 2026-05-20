@@ -34,6 +34,8 @@ public class RegistrarCobroModalController {
 
     // ── Tab 1: Registrar Pago ─────────────────────────────────
     @FXML private ComboBox<Interno>  cmbInterno;
+    @FXML private VBox               panelSelectorCuota;
+    @FXML private ComboBox<Cuota>    cmbCuotaPeriodo;
     @FXML private VBox               panelCuota;
     @FXML private Label              lblPeriodo;
     @FXML private Label              lblMontoOriginal;
@@ -88,6 +90,18 @@ public class RegistrarCobroModalController {
         };
         cmbInterno.setConverter(conv);
         cmbInternoGenerar.setConverter(conv);
+
+        cmbCuotaPeriodo.setConverter(new StringConverter<>() {
+            @Override public String toString(Cuota c) {
+                if (c == null) return "";
+                return c.getMesPeriodo() + "  ·  Saldo $" + c.getSaldoPendiente() + "  ·  " + c.getEstadoDisplay();
+            }
+            @Override public Cuota fromString(String s) { return null; }
+        });
+        cmbCuotaPeriodo.valueProperty().addListener((obs, o, n) -> {
+            if (n != null) mostrarCuota(n);
+            else           ocultarPanelCuota();
+        });
     }
 
     private void configurarTab1() {
@@ -157,24 +171,21 @@ public class RegistrarCobroModalController {
                          .findFirst()
                          .ifPresent(i -> {
                              cmbInterno.setValue(i);
-                             mostrarCuota(cuotaPreseleccionada);
+                             cmbCuotaPeriodo.getItems().setAll(cuotaPreseleccionada);
+                             panelSelectorCuota.setVisible(true);
+                             panelSelectorCuota.setManaged(true);
+                             cmbCuotaPeriodo.setValue(cuotaPreseleccionada);
                          });
                 }
             }, Platform::runLater);
     }
 
-    // ── Selección de interno → carga la cuota pendiente ───────
+    // ── Selección de interno → carga TODAS las cuotas pendientes ───
     @FXML
     private void onInternoSeleccionado() {
         Interno interno = cmbInterno.getValue();
         if (interno == null) {
-            ocultarPanelCuota();
-            return;
-        }
-        // Si ya tenemos la cuota preseleccionada para este interno, usarla directamente
-        if (cuotaPreseleccionada != null
-                && cuotaPreseleccionada.getInternoId() == interno.getId()) {
-            mostrarCuota(cuotaPreseleccionada);
+            ocultarSelectorYPanel();
             return;
         }
         cuotaPreseleccionada = null;
@@ -184,19 +195,32 @@ public class RegistrarCobroModalController {
             .thenAcceptAsync(result -> {
                 setLoading(false);
                 if (!result.success) {
-                    AlertHelper.error("Error al cargar cuota: " + result.errorMensaje);
+                    AlertHelper.error("Error al cargar cuotas: " + result.errorMensaje);
                     return;
                 }
-                Cuota cuota = parsearCuotaPendiente(result.data);
-                if (cuota != null) {
-                    mostrarCuota(cuota);
-                } else {
-                    ocultarPanelCuota();
+                List<Cuota> pendientes = parsearCuotasPendientes(result.data);
+                if (pendientes.isEmpty()) {
+                    ocultarSelectorYPanel();
                     lblSinCuota.setVisible(true);
                     lblSinCuota.setManaged(true);
                     actualizarBoton();
+                    return;
                 }
+                cmbCuotaPeriodo.getItems().setAll(pendientes);
+                panelSelectorCuota.setVisible(true);
+                panelSelectorCuota.setManaged(true);
+                lblSinCuota.setVisible(false);
+                lblSinCuota.setManaged(false);
+                cmbCuotaPeriodo.setValue(pendientes.get(0));
             }, Platform::runLater);
+    }
+
+    private void ocultarSelectorYPanel() {
+        cmbCuotaPeriodo.getItems().clear();
+        cmbCuotaPeriodo.setValue(null);
+        panelSelectorCuota.setVisible(false);
+        panelSelectorCuota.setManaged(false);
+        ocultarPanelCuota();
     }
 
     private void mostrarCuota(Cuota cuota) {
@@ -396,6 +420,7 @@ public class RegistrarCobroModalController {
         progressIndicator.setVisible(cargando);
         btnConfirmar.setDisable(cargando);
         cmbInterno.setDisable(cargando);
+        cmbCuotaPeriodo.setDisable(cargando);
         txtMonto.setDisable(cargando);
         cmbMedio.setDisable(cargando);
         txtPagadorObraSocial.setDisable(cargando);
@@ -407,52 +432,38 @@ public class RegistrarCobroModalController {
         cmbInternoGenerar.setDisable(cargando);
     }
 
-    /** Parsea la respuesta de cuentaCorriente buscando la cuota pendiente más reciente */
-    private Cuota parsearCuotaPendiente(JsonNode node) {
-        if (node == null || node.isNull()) return null;
+    /** Devuelve TODAS las cuotas pendientes/parciales/con_mora ordenadas (más recientes primero) */
+    private List<Cuota> parsearCuotasPendientes(JsonNode node) {
+        List<Cuota> result = new java.util.ArrayList<>();
+        if (node == null || node.isNull()) return result;
         try {
-            JsonNode target = null;
-
+            JsonNode array = null;
             if (node.isArray()) {
-                target = buscarMasReciente(node);
-            } else if (node.has("cuota_activa") && !node.get("cuota_activa").isNull()) {
-                target = node.get("cuota_activa");
+                array = node;
             } else if (node.has("datos") && node.get("datos").isArray()) {
-                target = buscarMasReciente(node.get("datos"));
+                array = node.get("datos");
             } else if (node.has("cuotas") && node.get("cuotas").isArray()) {
-                target = buscarMasReciente(node.get("cuotas"));
-            } else if (node.has("estado")) {
-                String estado = node.get("estado").asText();
-                if (esPendiente(estado)) target = node;
+                array = node.get("cuotas");
+            } else if (node.has("cuota_activa") && !node.get("cuota_activa").isNull()) {
+                result.add(MAPPER.treeToValue(node.get("cuota_activa"), Cuota.class));
+                return result;
+            } else if (node.has("estado") && esPendiente(node.get("estado").asText())) {
+                result.add(MAPPER.treeToValue(node, Cuota.class));
+                return result;
             }
 
-            if (target == null) return null;
-            return MAPPER.treeToValue(target, Cuota.class);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /** Devuelve el nodo de cuota pendiente/parcial/con_mora con período más reciente */
-    private JsonNode buscarMasReciente(JsonNode array) {
-        JsonNode encontrado = null;
-        int mejorAnio = -1;
-        int mejorMes  = -1;
-
-        for (JsonNode item : array) {
-            String estado = item.has("estado") ? item.get("estado").asText() : "";
-            if (!esPendiente(estado)) continue;
-
-            int anio = item.has("anio") ? item.get("anio").asInt() : 0;
-            int mes  = item.has("mes")  ? item.get("mes").asInt()  : 0;
-
-            if (anio > mejorAnio || (anio == mejorAnio && mes > mejorMes)) {
-                mejorAnio  = anio;
-                mejorMes   = mes;
-                encontrado = item;
+            if (array == null) return result;
+            for (JsonNode item : array) {
+                String estado = item.has("estado") ? item.get("estado").asText() : "";
+                if (!esPendiente(estado)) continue;
+                result.add(MAPPER.treeToValue(item, Cuota.class));
             }
-        }
-        return encontrado;
+            result.sort((a, b) -> {
+                int cmp = Integer.compare(b.getAnio(), a.getAnio());
+                return cmp != 0 ? cmp : Integer.compare(b.getMes(), a.getMes());
+            });
+        } catch (Exception ignored) {}
+        return result;
     }
 
     private boolean esPendiente(String estado) {

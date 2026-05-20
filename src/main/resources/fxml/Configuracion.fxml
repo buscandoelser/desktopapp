@@ -32,12 +32,14 @@
                                 <HBox styleClass="card-head" alignment="CENTER_LEFT" spacing="12">
                                     <Label text="💰" style="-fx-font-size: 20px;"/>
                                     <Label text="Cuota mensual" styleClass="card-title"/>
-                                    <Region HBox.hgrow="ALWAYS"/>
-                                    <Label fx:id="lblCuotaActual" text="Cargando..."
-                                           styleClass="stat-value" style="-fx-font-size: 22px;"/>
                                 </HBox>
-                                <VBox spacing="12" style="-fx-padding: 16 18 20 18;">
-                                    <Label fx:id="lblCuotaVigencia" text="" styleClass="label-secondary"/>
+                                <VBox spacing="14" style="-fx-padding: 16 18 20 18;">
+                                    <VBox spacing="4">
+                                        <Label text="VALOR ACTUAL" styleClass="input-label"/>
+                                        <Label fx:id="lblCuotaActual" text="—"
+                                               style="-fx-font-size: 28px; -fx-font-weight: 700; -fx-text-fill: #B45309;"/>
+                                    </VBox>
+                                    <Separator/>
                                     <HBox spacing="16" alignment="BOTTOM_LEFT">
                                         <VBox spacing="5" HBox.hgrow="ALWAYS">
                                             <Label text="NUEVO MONTO ($)" styleClass="input-label"/>
@@ -45,13 +47,6 @@
                                                        styleClass="input-field"
                                                        promptText="ej: 90000.00"
                                                        maxWidth="220"/>
-                                        </VBox>
-                                        <VBox spacing="5">
-                                            <Label text="VIGENTE DESDE" styleClass="input-label"/>
-                                            <DatePicker fx:id="dpVigenciaDesde"
-                                                        styleClass="date-picker"
-                                                        promptText="YYYY-MM-DD"
-                                                        prefWidth="160"/>
                                         </VBox>
                                         <Button text="Guardar"
                                                 onAction="#onGuardarCuota"
@@ -84,6 +79,35 @@
                                         </VBox>
                                         <Button text="Guardar"
                                                 onAction="#onGuardarMora"
+                                                styleClass="btn-primary"
+                                                style="-fx-padding: 10 20 10 20;"/>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
+                            <!-- Card: Total de camas -->
+                            <VBox styleClass="card" spacing="0">
+                                <HBox styleClass="card-head" alignment="CENTER_LEFT" spacing="12">
+                                    <Label text="🛏" style="-fx-font-size: 18px;"/>
+                                    <Label text="Capacidad total (camas)" styleClass="card-title"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="lblCamasActual" text="—"
+                                           styleClass="stat-value" style="-fx-font-size: 22px;"/>
+                                </HBox>
+                                <VBox spacing="12" style="-fx-padding: 16 18 20 18;">
+                                    <Label text="Cantidad total de plazas disponibles en la institución. Usado en el dashboard para calcular el % de ocupación."
+                                           styleClass="label-secondary"
+                                           wrapText="true"/>
+                                    <HBox spacing="16" alignment="BOTTOM_LEFT">
+                                        <VBox spacing="5">
+                                            <Label text="NUEVO TOTAL" styleClass="input-label"/>
+                                            <Spinner fx:id="spinnerCamas"
+                                                     styleClass="spinner-field"
+                                                     prefWidth="130"
+                                                     editable="true"/>
+                                        </VBox>
+                                        <Button text="Guardar"
+                                                onAction="#onGuardarCamas"
                                                 styleClass="btn-primary"
                                                 style="-fx-padding: 10 20 10 20;"/>
                                     </HBox>

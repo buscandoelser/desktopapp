@@ -43,6 +43,14 @@
                                   onAction="#onInternoSeleccionado"/>
                     </VBox>
 
+                    <!-- Selector de período (cuotas pendientes del interno) -->
+                    <VBox fx:id="panelSelectorCuota" spacing="6" visible="false" managed="false">
+                        <Label text="PERÍODO A ABONAR *" styleClass="input-label"/>
+                        <ComboBox fx:id="cmbCuotaPeriodo" maxWidth="Infinity"
+                                  promptText="Elegí qué cuota pagar"
+                                  styleClass="combo-field"/>
+                    </VBox>
+
                     <!-- Cuota info (oculta hasta seleccionar interno) -->
                     <VBox fx:id="panelCuota" spacing="0" visible="false" managed="false"
                           styleClass="card">

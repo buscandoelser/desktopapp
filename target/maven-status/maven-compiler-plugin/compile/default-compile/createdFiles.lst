@@ -29,6 +29,7 @@ com\gestion\models\Cuota.class
 com\gestion\controllers\ConfiguracionController$1.class
 com\gestion\services\ReportesService.class
 com\gestion\services\InternoService.class
+com\gestion\controllers\RegistrarCobroModalController$2.class
 com\gestion\services\CobranzasService.class
 com\gestion\controllers\DashboardController.class
 com\gestion\services\AuthService.class

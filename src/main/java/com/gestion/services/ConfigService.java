@@ -52,9 +52,9 @@ public class ConfigService {
     }
 
     // ── POST /config/cuota ─────────────────────────────────────
-    public static ServiceResult<JsonNode> setCuota(String monto, String vigenciaDesde) {
+    public static ServiceResult<JsonNode> setCuota(String monto) {
         try {
-            Map<String, Object> datos = Map.of("monto", monto, "vigencia_desde", vigenciaDesde);
+            Map<String, Object> datos = Map.of("monto", monto);
             RequestBody body = RequestBody.create(mapper.writeValueAsString(datos), JSON_TYPE);
             Request req = authBuilder(AppConfig.API_BASE_URL + "/config/cuota").post(body).build();
             try (Response response = client.newCall(req).execute()) {
@@ -96,6 +96,38 @@ public class ConfigService {
             }
         } catch (Exception e) {
             System.err.println("[setMora] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
+        }
+    }
+
+    // ── GET /config/camas ──────────────────────────────────────
+    public static ServiceResult<JsonNode> getCamas() {
+        try {
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/config/camas").get().build();
+            try (Response response = client.newCall(req).execute()) {
+                JsonNode node = safeReadJson(response);
+                if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
+                return ServiceResult.success(node, 1);
+            }
+        } catch (Exception e) {
+            System.err.println("[getCamas] " + e.getMessage());
+            return ServiceResult.error(e.getMessage());
+        }
+    }
+
+    // ── POST /config/camas ─────────────────────────────────────
+    public static ServiceResult<JsonNode> setCamas(int total) {
+        try {
+            Map<String, Object> datos = Map.of("total", total);
+            RequestBody body = RequestBody.create(mapper.writeValueAsString(datos), JSON_TYPE);
+            Request req = authBuilder(AppConfig.API_BASE_URL + "/config/camas").post(body).build();
+            try (Response response = client.newCall(req).execute()) {
+                JsonNode node = safeReadJson(response);
+                if (!response.isSuccessful()) return ServiceResult.error(mensajeError(node));
+                return ServiceResult.success(node, 1);
+            }
+        } catch (Exception e) {
+            System.err.println("[setCamas] " + e.getMessage());
             return ServiceResult.error(e.getMessage());
         }
     }

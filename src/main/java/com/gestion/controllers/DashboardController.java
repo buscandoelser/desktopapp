@@ -2,6 +2,7 @@ package com.gestion.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gestion.services.CobranzasService;
+import com.gestion.services.ConfigService;
 import com.gestion.services.InternoService;
 import com.gestion.services.ReportesService;
 import com.gestion.ui.CapacityRing;
@@ -44,7 +45,8 @@ public class DashboardController {
     @FXML private Label     lblAlDiaValor;
     @FXML private Label     lblTotalInternosDeuda;
 
-    private static final int CAPACIDAD_TOTAL = 40;
+    private static final int CAPACIDAD_DEFAULT = 40;
+    private int capacidadTotal = CAPACIDAD_DEFAULT;
 
     private CapacityRing capacityRing;
     private CapacityRing deudaRing;
@@ -66,10 +68,23 @@ public class DashboardController {
 
         buildRings();
 
-        cargarInternosActivos();
+        cargarCapacidadTotal();
         cargarIngresosMes();
         cargarDeudaTotal();
         cargarCuotasRecientes();
+    }
+
+    private void cargarCapacidadTotal() {
+        CompletableFuture
+            .supplyAsync(ConfigService::getCamas)
+            .thenAcceptAsync(result -> {
+                if (result.success && result.data != null) {
+                    capacidadTotal = result.data.path("total").asInt(
+                            result.data.path("valor").asInt(CAPACIDAD_DEFAULT));
+                }
+                lblCapacidadTotal.setText("Capacidad total: " + capacidadTotal + " plazas");
+                cargarInternosActivos();
+            }, Platform::runLater);
     }
 
     // ── Rings setup ───────────────────────────────────────────────────────
@@ -79,7 +94,7 @@ public class DashboardController {
         capacityRing = new CapacityRing(190, 18);
         capacityRing.setSubText("ocupación");
         capacityRingHost.getChildren().setAll(capacityRing);
-        lblCapacidadTotal.setText("Capacidad total: " + CAPACIDAD_TOTAL + " plazas");
+        lblCapacidadTotal.setText("Capacidad total: " + capacidadTotal + " plazas");
 
         // Deuda ring (danger / coral red gradient)
         deudaRing = new CapacityRing(190, 18);
@@ -100,8 +115,8 @@ public class DashboardController {
             .thenAcceptAsync(result -> {
                 if (result.success) {
                     int activos = result.total;
-                    int libres  = Math.max(0, CAPACIDAD_TOTAL - activos);
-                    double pct  = (double) activos / CAPACIDAD_TOTAL;
+                    int libres  = Math.max(0, capacidadTotal - activos);
+                    double pct  = capacidadTotal > 0 ? (double) activos / capacidadTotal : 0;
 
                     lblOcupadasValor.setText(String.valueOf(activos));
                     lblLibresValor.setText(String.valueOf(libres));

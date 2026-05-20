@@ -184,6 +184,10 @@ public class InternoFormController {
                 ((TextField) fila.lookup("#tfTelC")).setText(c.getTelefono() != null ? c.getTelefono() : "");
                 TextField tfVinculo = (TextField) fila.lookup("#tfVinculo");
                 if (tfVinculo != null) tfVinculo.setText(c.getVinculo() != null ? c.getVinculo() : "");
+                TextField tfDniC = (TextField) fila.lookup("#tfDniC");
+                if (tfDniC != null) tfDniC.setText(c.getDni() != null ? c.getDni() : "");
+                TextField tfDireccionC = (TextField) fila.lookup("#tfDireccionC");
+                if (tfDireccionC != null) tfDireccionC.setText(c.getDomicilio() != null ? c.getDomicilio() : "");
             }
         }
 
@@ -322,19 +326,33 @@ public class InternoFormController {
     }
 
     private void agregarFilaContacto(boolean esReferente) {
-        TextField tfNombre   = new TextField(); tfNombre.setId("tfNombreC");   tfNombre.setPromptText("Nombre *");
-        TextField tfTelefono = new TextField(); tfTelefono.setId("tfTelC");    tfTelefono.setPromptText("Teléfono *");
-        TextField tfVinculo  = new TextField(); tfVinculo.setId("tfVinculo");  tfVinculo.setPromptText("Vínculo");
-        CheckBox  chkRef     = new CheckBox("Referente");
+        TextField tfNombre    = new TextField(); tfNombre.setId("tfNombreC");      tfNombre.setPromptText("Nombre *");
+        TextField tfTelefono  = new TextField(); tfTelefono.setId("tfTelC");        tfTelefono.setPromptText("Teléfono *");
+        TextField tfVinculo   = new TextField(); tfVinculo.setId("tfVinculo");      tfVinculo.setPromptText("Vínculo");
+        TextField tfDniC      = new TextField(); tfDniC.setId("tfDniC");            tfDniC.setPromptText("DNI (opcional)");
+        TextField tfDireccionC = new TextField(); tfDireccionC.setId("tfDireccionC"); tfDireccionC.setPromptText("Dirección (opcional)");
+        CheckBox  chkRef      = new CheckBox("Referente");
         chkRef.setSelected(esReferente);
 
         Button btnEliminar = new Button("✕");
         btnEliminar.getStyleClass().add("btn-sm-danger");
 
-        HBox fila = new HBox(8, tfNombre, tfTelefono, tfVinculo, chkRef, btnEliminar);
-        fila.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        HBox filaSup = new HBox(8, tfNombre, tfTelefono, tfVinculo, chkRef, btnEliminar);
+        filaSup.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         HBox.setHgrow(tfNombre,   Priority.ALWAYS);
         HBox.setHgrow(tfTelefono, Priority.ALWAYS);
+
+        HBox filaInf = new HBox(8, tfDniC, tfDireccionC);
+        filaInf.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        HBox.setHgrow(tfDniC,       Priority.ALWAYS);
+        HBox.setHgrow(tfDireccionC, Priority.ALWAYS);
+
+        VBox interior = new VBox(6, filaSup, filaInf);
+        interior.getStyleClass().add("contacto-fila");
+
+        HBox fila = new HBox(interior);
+        fila.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        HBox.setHgrow(interior, Priority.ALWAYS);
 
         btnEliminar.setOnAction(e -> {
             if (filasContacto.size() <= 2) {
@@ -346,7 +364,6 @@ public class InternoFormController {
         });
 
         filasContacto.add(fila);
-        // Insertar antes del botón "Agregar contacto"
         int idx = vboxContactos.getChildren().indexOf(btnAgregarContacto);
         if (idx >= 0) vboxContactos.getChildren().add(idx, fila);
         else          vboxContactos.getChildren().add(fila);
@@ -411,11 +428,12 @@ public class InternoFormController {
         // Contactos
         List<Map<String, Object>> contactos = new ArrayList<>();
         for (HBox fila : filasContacto) {
-            TextField tfN = (TextField) fila.lookup("#tfNombreC");
-            TextField tfT = (TextField) fila.lookup("#tfTelC");
-            TextField tfV = (TextField) fila.lookup("#tfVinculo");
-            CheckBox  chR = (CheckBox)  fila.getChildren().stream()
-                    .filter(n -> n instanceof CheckBox).findFirst().orElse(null);
+            TextField tfN  = (TextField) fila.lookup("#tfNombreC");
+            TextField tfT  = (TextField) fila.lookup("#tfTelC");
+            TextField tfV  = (TextField) fila.lookup("#tfVinculo");
+            TextField tfD  = (TextField) fila.lookup("#tfDniC");
+            TextField tfDir = (TextField) fila.lookup("#tfDireccionC");
+            CheckBox  chR  = buscarCheckBox(fila);
 
             String textN = tfN != null ? safe(tfN.getText()) : "";
             String textT = tfT != null ? safe(tfT.getText()) : "";
@@ -424,12 +442,25 @@ public class InternoFormController {
                 c.put("nombre",       textN.trim());
                 c.put("telefono",     textT.trim());
                 c.put("vinculo",      tfV != null ? safe(tfV.getText()).trim() : "");
+                c.put("dni",          tfD   != null ? safe(tfD.getText()).trim()   : "");
+                c.put("domicilio",    tfDir != null ? safe(tfDir.getText()).trim() : "");
                 c.put("es_referente", chR != null && chR.isSelected());
                 contactos.add(c);
             }
         }
         m.put("contactos", contactos);
         return m;
+    }
+
+    private CheckBox buscarCheckBox(javafx.scene.Parent parent) {
+        for (javafx.scene.Node n : parent.getChildrenUnmodifiable()) {
+            if (n instanceof CheckBox cb) return cb;
+            if (n instanceof javafx.scene.Parent p) {
+                CheckBox r = buscarCheckBox(p);
+                if (r != null) return r;
+            }
+        }
+        return null;
     }
 
     @FXML
