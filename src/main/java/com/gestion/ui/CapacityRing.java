@@ -62,8 +62,8 @@ public class CapacityRing extends StackPane {
         // ── Foreground (progress) ring — starts at 90° (top), sweeps clockwise ──
         LinearGradient gradient = new LinearGradient(
             0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
-            new Stop(0.0, Color.web("#F4B23A")),
-            new Stop(1.0, Color.web("#C98A1B"))
+            new Stop(0.0, Color.web("#F39A2B")),
+            new Stop(1.0, Color.web("#E8651E"))
         );
         fgArc = new Arc(cx, cy, radius, radius, 90, 0);
         fgArc.setType(ArcType.OPEN);

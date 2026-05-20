@@ -59,22 +59,22 @@
                             <VBox spacing="3">
                                 <Label text="Período" styleClass="stat-label"/>
                                 <Label fx:id="lblPeriodo" text="—"
-                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#e2e8f0;"/>
+                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#1A1A1A;"/>
                             </VBox>
                             <VBox spacing="3">
                                 <Label text="Monto original" styleClass="stat-label"/>
                                 <Label fx:id="lblMontoOriginal" text="—"
-                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#e2e8f0;"/>
+                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#1A1A1A;"/>
                             </VBox>
                             <VBox spacing="3">
                                 <Label text="Saldo pendiente" styleClass="stat-label"/>
                                 <Label fx:id="lblSaldo" text="—"
-                                       style="-fx-font-size:14px; -fx-font-weight:700; -fx-text-fill:#facc15;"/>
+                                       style="-fx-font-size:14px; -fx-font-weight:700; -fx-text-fill:#E8651E;"/>
                             </VBox>
                             <VBox spacing="3">
                                 <Label text="Estado" styleClass="stat-label"/>
                                 <Label fx:id="lblEstadoCuota" text="—"
-                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#94a3b8;"/>
+                                       style="-fx-font-size:13px; -fx-font-weight:600; -fx-text-fill:#4A4A4A;"/>
                             </VBox>
                         </HBox>
                     </VBox>
