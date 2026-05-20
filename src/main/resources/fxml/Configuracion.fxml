@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gestion.controllers.ConfiguracionController"
+      styleClass="module-container"
+      spacing="16">
+
+    <!-- ── Encabezado ─────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <Label text="Configuración" styleClass="module-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+    <Label text="Parámetros del sistema · Gestión de usuarios · Auditoría"
+           styleClass="label-secondary"/>
+
+    <!-- ── Tabs ───────────────────────────────────────────────── -->
+    <TabPane styleClass="config-tabs" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
+
+        <!-- ══ Tab 1: Parámetros ══════════════════════════════ -->
+        <Tab text="⚙  Parámetros">
+            <content>
+                <ScrollPane styleClass="scroll-dark" fitToWidth="true" hbarPolicy="NEVER">
+                    <content>
+                        <VBox spacing="16" style="-fx-padding: 4 0 8 0;">
+
+                            <!-- Card: Cuota mensual -->
+                            <VBox styleClass="card" spacing="0">
+                                <HBox styleClass="card-head" alignment="CENTER_LEFT" spacing="12">
+                                    <Label text="💰" style="-fx-font-size: 20px;"/>
+                                    <Label text="Cuota mensual" styleClass="card-title"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Label fx:id="lblCuotaActual" text="Cargando..."
+                                           styleClass="stat-value" style="-fx-font-size: 22px;"/>
+                                </HBox>
+                                <VBox spacing="12" style="-fx-padding: 16 18 20 18;">
+                                    <Label fx:id="lblCuotaVigencia" text="" styleClass="label-secondary"/>
+                                    <HBox spacing="16" alignment="BOTTOM_LEFT">
+                                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                            <Label text="NUEVO MONTO ($)" styleClass="input-label"/>
+                                            <TextField fx:id="txtCuotaMonto"
+                                                       styleClass="input-field"
+                                                       promptText="ej: 90000.00"
+                                                       maxWidth="220"/>
+                                        </VBox>
+                                        <VBox spacing="5">
+                                            <Label text="VIGENTE DESDE" styleClass="input-label"/>
+                                            <DatePicker fx:id="dpVigenciaDesde"
+                                                        styleClass="date-picker"
+                                                        promptText="YYYY-MM-DD"
+                                                        prefWidth="160"/>
+                                        </VBox>
+                                        <Button text="Guardar"
+                                                onAction="#onGuardarCuota"
+                                                styleClass="btn-primary"
+                                                style="-fx-padding: 10 20 10 20;"/>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
+                            <!-- Card: Tasa de interés -->
+                            <VBox styleClass="card" spacing="0">
+                                <HBox styleClass="card-head" alignment="CENTER_LEFT" spacing="12">
+                                    <Label text="📈" style="-fx-font-size: 18px;"/>
+                                    <Label text="Tasa de interés por mora" styleClass="card-title"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <HBox alignment="CENTER" spacing="3">
+                                        <Label fx:id="lblInteresActual" text="—"
+                                               styleClass="stat-value" style="-fx-font-size: 22px;"/>
+                                        <Label text=" %" styleClass="label-secondary"/>
+                                    </HBox>
+                                </HBox>
+                                <VBox spacing="12" style="-fx-padding: 16 18 20 18;">
+                                    <Label text="Porcentaje mensual aplicado a cuotas vencidas sin pago ni pago parcial."
+                                           styleClass="label-secondary"/>
+                                    <HBox spacing="16" alignment="BOTTOM_LEFT">
+                                        <VBox spacing="5">
+                                            <Label text="NUEVA TASA (%)" styleClass="input-label"/>
+                                            <TextField fx:id="txtTasa"
+                                                       styleClass="input-field"
+                                                       promptText="ej: 5.5"
+                                                       maxWidth="180"/>
+                                        </VBox>
+                                        <Button text="Guardar"
+                                                onAction="#onGuardarInteres"
+                                                styleClass="btn-primary"
+                                                style="-fx-padding: 10 20 10 20;"/>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
+                            <!-- Card: Día de vencimiento -->
+                            <VBox styleClass="card" spacing="0">
+                                <HBox styleClass="card-head" alignment="CENTER_LEFT" spacing="12">
+                                    <Label text="📅" style="-fx-font-size: 20px;"/>
+                                    <Label text="Día de vencimiento de cuotas" styleClass="card-title"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <HBox alignment="CENTER" spacing="4">
+                                        <Label text="Día" styleClass="label-secondary"/>
+                                        <Label fx:id="lblVencimientoActual" text="—"
+                                               styleClass="stat-value" style="-fx-font-size: 22px;"/>
+                                    </HBox>
+                                </HBox>
+                                <VBox spacing="12" style="-fx-padding: 16 18 20 18;">
+                                    <Label text="Al día siguiente del vencimiento el sistema aplica mora automáticamente a cuotas sin pago."
+                                           styleClass="label-secondary"/>
+                                    <HBox spacing="16" alignment="BOTTOM_LEFT">
+                                        <VBox spacing="5">
+                                            <Label text="NUEVO DÍA (1 – 28)" styleClass="input-label"/>
+                                            <Spinner fx:id="spinnerDia"
+                                                     styleClass="spinner-field"
+                                                     prefWidth="130"
+                                                     editable="true"/>
+                                        </VBox>
+                                        <Button text="Guardar"
+                                                onAction="#onGuardarVencimiento"
+                                                styleClass="btn-primary"
+                                                style="-fx-padding: 10 20 10 20;"/>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </content>
+        </Tab>
+
+        <!-- ══ Tab 2: Usuarios ════════════════════════════════ -->
+        <Tab text="👤  Usuarios">
+            <content>
+                <VBox spacing="12" style="-fx-padding: 4 0 0 0;">
+                    <HBox alignment="CENTER_RIGHT">
+                        <Button text="+ Nuevo usuario"
+                                onAction="#onNuevoUsuario"
+                                styleClass="btn-primary"/>
+                    </HBox>
+                    <TableView fx:id="tablaUsuarios"
+                               styleClass="table-dark"
+                               VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colUsername"       text="Usuario"     prefWidth="150"/>
+                            <TableColumn fx:id="colNombreCompleto" text="Nombre"      prefWidth="210"/>
+                            <TableColumn fx:id="colRol"            text="Rol"         prefWidth="140"/>
+                            <TableColumn fx:id="colEstado"         text="Estado"      prefWidth="90"/>
+                            <TableColumn fx:id="colAccionesUsr"    text="Acciones"    prefWidth="160"/>
+                        </columns>
+                        <placeholder>
+                            <Label text="Sin usuarios registrados" styleClass="table-placeholder"/>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </content>
+        </Tab>
+
+        <!-- ══ Tab 3: Auditoría ═══════════════════════════════ -->
+        <Tab text="📋  Auditoría">
+            <content>
+                <VBox spacing="12" style="-fx-padding: 4 0 0 0;">
+                    <TableView fx:id="tablaAuditoria"
+                               styleClass="table-dark"
+                               VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colAudFecha"    text="Fecha / Hora"  prefWidth="160"/>
+                            <TableColumn fx:id="colAudUsuario"  text="Usuario"       prefWidth="130"/>
+                            <TableColumn fx:id="colAudEntidad"  text="Entidad"       prefWidth="120"/>
+                            <TableColumn fx:id="colAudAccion"   text="Acción"        prefWidth="140"/>
+                            <TableColumn fx:id="colAudDetalle"  text="Detalle"       prefWidth="320"/>
+                        </columns>
+                        <placeholder>
+                            <Label text="Sin registros de auditoría" styleClass="table-placeholder"/>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </content>
+        </Tab>
+
+    </TabPane>
+
+</VBox>

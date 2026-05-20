@@ -119,7 +119,8 @@ public class MainController {
                 botonActivo = boton;
             }
         } catch (Exception e) {
-            AlertHelper.info("Módulo '" + modulo + "' disponible próximamente.");
+            e.printStackTrace();
+            AlertHelper.error("Error al abrir módulo '" + modulo + "':\n" + e.getMessage());
         }
     }
 
