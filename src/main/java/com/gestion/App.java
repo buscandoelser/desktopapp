@@ -27,6 +27,7 @@ public class App extends Application {
 
         Scene scene = new Scene(root, 860, 560);
         scene.getStylesheets().add(getClass().getResource("/css/dark-futuristic.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/css/interactive-dock.css").toExternalForm());
 
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/logo-buscando-ser.png")));
         primaryStage.setTitle("Sistema de Gestión de Internos");

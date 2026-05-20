@@ -106,6 +106,9 @@ public class LoginController {
             scene.getStylesheets().add(
                     getClass().getResource("/css/dark-futuristic.css").toExternalForm()
             );
+            scene.getStylesheets().add(
+                    getClass().getResource("/css/interactive-dock.css").toExternalForm()
+            );
 
             Stage stage = AppConfig.getPrimaryStage();
             stage.setScene(scene);

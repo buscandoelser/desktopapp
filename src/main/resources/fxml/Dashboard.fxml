@@ -50,7 +50,7 @@
         </VBox>
     </GridPane>
 
-    <!-- ── Dos cards lado a lado ─────────────────────────────── -->
+    <!-- ── Tres cards lado a lado ────────────────────────────── -->
     <HBox spacing="16" VBox.vgrow="ALWAYS">
 
         <!-- Cobranzas recientes -->
@@ -69,6 +69,32 @@
                 <Label text="Próximas altas previstas" styleClass="card-title"/>
             </HBox>
             <VBox fx:id="listAltas" spacing="0"/>
+        </VBox>
+
+        <!-- Capacidad de la casa (ring chart) -->
+        <VBox styleClass="capacity-ring-card" alignment="TOP_CENTER" spacing="12">
+            <HBox alignment="CENTER_LEFT" spacing="6">
+                <Label text="Ocupación Casa Central" styleClass="capacity-ring-title"/>
+            </HBox>
+            <Label text="camas ocupadas vs. capacidad total" styleClass="capacity-ring-hint"/>
+
+            <StackPane fx:id="capacityRingHost" prefHeight="190" minHeight="190"/>
+
+            <VBox spacing="6" maxWidth="Infinity">
+                <HBox styleClass="capacity-legend-row">
+                    <Region styleClass="capacity-legend-dot used"/>
+                    <Label text="Ocupadas" styleClass="capacity-legend-label"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblOcupadasValor" text="—" styleClass="capacity-legend-value"/>
+                </HBox>
+                <HBox styleClass="capacity-legend-row">
+                    <Region styleClass="capacity-legend-dot free"/>
+                    <Label text="Libres" styleClass="capacity-legend-label"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblLibresValor" text="—" styleClass="capacity-legend-value"/>
+                </HBox>
+                <Label fx:id="lblCapacidadTotal" text="—" styleClass="capacity-total-label"/>
+            </VBox>
         </VBox>
 
     </HBox>

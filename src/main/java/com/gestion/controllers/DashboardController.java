@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gestion.services.CobranzasService;
 import com.gestion.services.InternoService;
 import com.gestion.services.ReportesService;
+import com.gestion.ui.CapacityRing;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
@@ -29,8 +31,15 @@ public class DashboardController {
     @FXML private Label lblPendientesDelta;
     @FXML private Label lblPlazas;
     @FXML private Label lblPlazasDelta;
-    @FXML private VBox  listCobranzas;
-    @FXML private VBox  listAltas;
+    @FXML private VBox      listCobranzas;
+    @FXML private VBox      listAltas;
+    @FXML private StackPane capacityRingHost;
+    @FXML private Label     lblOcupadasValor;
+    @FXML private Label     lblLibresValor;
+    @FXML private Label     lblCapacidadTotal;
+
+    private static final int CAPACIDAD_TOTAL = 40;
+    private CapacityRing capacityRing;
 
     private MainController mainController;
 
@@ -43,6 +52,8 @@ public class DashboardController {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d 'de' MMMM yyyy", Locale.of("es", "AR"));
         lblFecha.setText("Hoy, " + LocalDate.now().format(fmt));
 
+        buildCapacityRing();
+
         cargarInternosActivos();
         cargarIngresosMes();
         cargarDeudaTotal();
@@ -50,16 +61,33 @@ public class DashboardController {
         cargarProximasAltas();
     }
 
+    private void buildCapacityRing() {
+        capacityRing = new CapacityRing(190, 18);
+        capacityRing.setSubText("ocupación");
+        capacityRingHost.getChildren().setAll(capacityRing);
+        lblCapacidadTotal.setText("Capacidad total: " + CAPACIDAD_TOTAL + " plazas");
+    }
+
     private void cargarInternosActivos() {
         CompletableFuture
             .supplyAsync(() -> InternoService.listar("activo", null, 1))
             .thenAcceptAsync(result -> {
                 if (result.success) {
-                    lblInternosActivos.setText(String.valueOf(result.total));
+                    int activos = result.total;
+                    int libres  = Math.max(0, CAPACIDAD_TOTAL - activos);
+                    double pct  = (double) activos / CAPACIDAD_TOTAL;
+
+                    lblInternosActivos.setText(String.valueOf(activos));
                     lblInternosDelta.setText("activos en tratamiento");
+
+                    lblOcupadasValor.setText(String.valueOf(activos));
+                    lblLibresValor.setText(String.valueOf(libres));
+                    if (capacityRing != null) capacityRing.setProgress(pct, true);
                 } else {
                     lblInternosActivos.setText("—");
                     lblInternosDelta.setText("Sin conexión");
+                    lblOcupadasValor.setText("—");
+                    lblLibresValor.setText("—");
                 }
             }, Platform::runLater);
     }
