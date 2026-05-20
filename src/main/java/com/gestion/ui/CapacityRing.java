@@ -55,15 +55,15 @@ public class CapacityRing extends StackPane {
         bgArc = new Arc(cx, cy, radius, radius, 0, 360);
         bgArc.setType(ArcType.OPEN);
         bgArc.setFill(null);
-        bgArc.setStroke(Color.web("#EFE5C9"));
+        bgArc.setStroke(Color.web("#2A2A2A"));
         bgArc.setStrokeWidth(thickness);
         bgArc.setStrokeLineCap(StrokeLineCap.ROUND);
 
         // ── Foreground (progress) ring — starts at 90° (top), sweeps clockwise ──
         LinearGradient gradient = new LinearGradient(
             0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
-            new Stop(0.0, Color.web("#F39A2B")),
-            new Stop(1.0, Color.web("#E8651E"))
+            new Stop(0.0, Color.web("#FF6B1A")),
+            new Stop(1.0, Color.web("#D4500A"))
         );
         fgArc = new Arc(cx, cy, radius, radius, 90, 0);
         fgArc.setType(ArcType.OPEN);

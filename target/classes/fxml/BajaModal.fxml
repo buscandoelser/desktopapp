@@ -13,7 +13,7 @@
     <!-- ── Header ─────────────────────────────────────────────── -->
     <HBox styleClass="wizard-header" alignment="CENTER_LEFT" spacing="14">
         <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
-        <Label text="⚠" style="-fx-font-size:22px; -fx-text-fill:#C2553F;"/>
+        <Label text="⚠" style="-fx-font-size:22px; -fx-text-fill:#EF4444;"/>
         <VBox spacing="3">
             <Label text="Dar de baja al interno" styleClass="wizard-step-title"/>
             <Label fx:id="lblNombre" text="" styleClass="label-secondary"/>

@@ -101,8 +101,8 @@ public class DashboardController {
         deudaRing.setSubText("con deuda");
         deudaRing.setProgressPaint(new LinearGradient(
             0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
-            new Stop(0.0, Color.web("#E07B58")),
-            new Stop(1.0, Color.web("#A8412E"))
+            new Stop(0.0, Color.web("#EF4444")),
+            new Stop(1.0, Color.web("#DC2626"))
         ));
         deudaRingHost.getChildren().setAll(deudaRing);
     }

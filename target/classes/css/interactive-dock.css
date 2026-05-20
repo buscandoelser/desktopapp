@@ -5,12 +5,12 @@
 
 /* ── Root container ─────────────────────────────────────────────── */
 .dock-root {
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #F39A2B 0%, #E8651E 100%);
-    -fx-border-color: #C2520F transparent transparent transparent;
-    -fx-border-width: 2 0 0 0;
+    -fx-background-color: #111111;
+    -fx-border-color: #2A2A2A transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
     -fx-pref-height: 72;
     -fx-min-height: 72;
-    -fx-effect: dropshadow(gaussian, rgba(194, 82, 15, 0.40), 16, 0, 0, -6);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.60), 18, 0, 0, -6);
 }
 
 .dock-stack {
@@ -35,14 +35,17 @@
 }
 
 .dock-cell:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.18);
+    -fx-background-color: rgba(255, 107, 26, 0.10);
 }
 
-/* white pill behind active item */
+/* orange pill behind active item */
 .dock-cell-active {
-    -fx-background-color: rgba(255, 255, 255, 0.22);
+    -fx-background-color: rgba(255, 107, 26, 0.16);
     -fx-background-radius: 14;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, 2);
+    -fx-border-color: rgba(255, 107, 26, 0.45);
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(255, 107, 26, 0.30), 12, 0, 0, 0);
 }
 
 /* ── Icon wrapper ───────────────────────────────────────────────── */
@@ -53,15 +56,15 @@
 
 /* ── Icon (Region with -fx-shape set inline in Java) ───────────── */
 .dock-icon {
-    -fx-background-color: rgba(255,255,255,0.72);  /* white-translucent inactive */
+    -fx-background-color: #52525B;  /* zinc muted inactive */
 }
 
 .dock-icon-active {
-    -fx-background-color: #FFFFFF;  /* solid white active */
+    -fx-background-color: #FF6B1A;  /* vivid orange active */
 }
 
 .dock-icon-hover {
-    -fx-background-color: #FFFFFF;  /* solid white on hover */
+    -fx-background-color: #FF8438;  /* lighter orange on hover */
 }
 
 /* ── Label ──────────────────────────────────────────────────────── */
@@ -69,30 +72,30 @@
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 10.5px;
     -fx-font-weight: 600;
-    -fx-text-fill: rgba(255,255,255,0.78);
+    -fx-text-fill: #A1A1AA;
     -fx-wrap-text: false;
 }
 
 .dock-label-active {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #FF6B1A;
     -fx-font-weight: 800;
 }
 
 .dock-label-hover {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #FF8438;
 }
 
 /* ── Sliding indicator pill ─────────────────────────────────────── */
 .dock-indicator {
-    -fx-fill: #FFFFFF;
+    -fx-fill: #FF6B1A;
     -fx-arc-width: 4;
     -fx-arc-height: 4;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 6, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(255, 107, 26, 0.55), 10, 0, 0, 0);
 }
 
 /* ── Compact capacity chip (lives in the header) ────────────────── */
 .header-capacity-chip {
-    -fx-background-color: #EFE5C9;
+    -fx-background-color: #2A2A2A;
     -fx-background-radius: 20;
     -fx-padding: 5 12 5 10;
     -fx-spacing: 7;
@@ -102,24 +105,24 @@
 .header-cap-meta {
     -fx-font-family: "Segoe UI", "Inter", Arial, sans-serif;
     -fx-font-size: 11.5px;
-    -fx-text-fill: #4A4A4A;
+    -fx-text-fill: #A1A1AA;
 }
 
 .capacity-bar-mini {
     -fx-pref-height: 4;
     -fx-pref-width: 90;
-    -fx-background-color: #E8DCBE;
+    -fx-background-color: #333333;
     -fx-background-radius: 2;
-    -fx-accent: #F39A2B;
+    -fx-accent: #FF6B1A;
 }
 
 .capacity-bar-mini > .track {
-    -fx-background-color: #E8DCBE;
+    -fx-background-color: #333333;
     -fx-background-radius: 2;
 }
 
 .capacity-bar-mini > .bar {
-    -fx-background-color: #F39A2B;
+    -fx-background-color: #FF6B1A;
     -fx-background-radius: 2;
     -fx-background-insets: 0;
 }
@@ -129,49 +132,49 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 .capacity-ring-card {
-    -fx-background-color: #FFFCF5;
+    -fx-background-color: #1A1A1A;
     -fx-background-radius: 14;
-    -fx-border-color: #E8DCBE;
+    -fx-border-color: #2A2A2A;
     -fx-border-width: 1;
     -fx-border-radius: 14;
     -fx-padding: 20 22 20 22;
     -fx-spacing: 14;
     -fx-pref-width: 320;
     -fx-min-width: 300;
-    -fx-effect: dropshadow(gaussian, rgba(58,46,31,0.04), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 12, 0, 0, 3);
 }
 
 .capacity-ring-title {
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: 700;
-    -fx-text-fill: #1A1A1A;
+    -fx-text-fill: #FFFFFF;
 }
 
 .capacity-ring-hint {
     -fx-font-size: 11px;
-    -fx-text-fill: #6B6B6B;
+    -fx-text-fill: #52525B;
 }
 
 .capacity-ring-percent {
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 34px;
     -fx-font-weight: 800;
-    -fx-text-fill: #1A1A1A;
+    -fx-text-fill: #FFFFFF;
 }
 
 .capacity-ring-sub {
     -fx-font-family: "Segoe UI", "Inter", Arial, sans-serif;
     -fx-font-size: 10.5px;
-    -fx-text-fill: #4A4A4A;
+    -fx-text-fill: #A1A1AA;
     -fx-padding: 2 0 0 0;
 }
 
 /* Legend rows under the ring */
-.capacity-legend-dot.used   { -fx-background-color: #F39A2B; }
-.capacity-legend-dot.free   { -fx-background-color: #EFE5C9; }
-.capacity-legend-dot.deuda  { -fx-background-color: #C2553F; }
-.capacity-legend-dot.al-dia { -fx-background-color: #EFE5C9; }
+.capacity-legend-dot.used   { -fx-background-color: #FF6B1A; }
+.capacity-legend-dot.free   { -fx-background-color: #2A2A2A; }
+.capacity-legend-dot.deuda  { -fx-background-color: #EF4444; }
+.capacity-legend-dot.al-dia { -fx-background-color: #2A2A2A; }
 
 .capacity-legend-row {
     -fx-alignment: CENTER_LEFT;
@@ -188,19 +191,19 @@
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: 500;
-    -fx-text-fill: #1A1A1A;
+    -fx-text-fill: #FFFFFF;
 }
 
 .capacity-legend-value {
     -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     -fx-font-size: 24px;
     -fx-font-weight: 800;
-    -fx-text-fill: #1A1A1A;
+    -fx-text-fill: #FFFFFF;
 }
 
 .capacity-total-label {
     -fx-font-size: 12px;
-    -fx-text-fill: #4A4A4A;
+    -fx-text-fill: #A1A1AA;
     -fx-padding: 10 0 0 0;
 }
 
@@ -246,11 +249,11 @@
 
 /* Close button — red on hover, white icon */
 .win-ctrl-close:hover {
-    -fx-background-color: #C2553F;
+    -fx-background-color: #EF4444;
 }
 
 .win-ctrl-close:pressed {
-    -fx-background-color: #A8412E;
+    -fx-background-color: #DC2626;
 }
 
 .win-ctrl-close:hover .win-ctrl-icon,
