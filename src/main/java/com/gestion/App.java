@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class App extends Application {
 
@@ -21,6 +22,7 @@ public class App extends Application {
         if (nunitoExtraBold != null) Font.loadFont(nunitoExtraBold, 14);
 
         AppConfig.setPrimaryStage(primaryStage);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
         Parent root = loader.load();

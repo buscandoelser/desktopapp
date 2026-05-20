@@ -2,6 +2,7 @@ package com.gestion.controllers;
 
 import com.gestion.config.AppConfig;
 import com.gestion.services.AuthService;
+import com.gestion.ui.WindowControls;
 import com.gestion.utils.AlertHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.util.concurrent.CompletableFuture;
@@ -22,11 +24,15 @@ public class LoginController {
     @FXML private Button         btnLogin;
     @FXML private Label          lblError;
     @FXML private ProgressIndicator progressIndicator;
+    @FXML private HBox           loginTitleBar;
+    @FXML private HBox           loginWindowControlsHost;
 
     @FXML
     public void initialize() {
         lblError.setVisible(false);
         progressIndicator.setVisible(false);
+
+        setupWindowChrome();
 
         // El campo visible comienza oculto
         txtPasswordVisible.setVisible(false);
@@ -36,6 +42,16 @@ public class LoginController {
         txtUsuario.setOnAction(e -> onLogin());
         txtPassword.setOnAction(e -> onLogin());
         txtPasswordVisible.setOnAction(e -> onLogin());
+    }
+
+    private void setupWindowChrome() {
+        Stage stage = AppConfig.getPrimaryStage();
+        if (stage == null) return;
+        // Login is non-resizable → no maximize button
+        loginWindowControlsHost.getChildren().setAll(
+                WindowControls.createControls(stage, false)
+        );
+        WindowControls.attachDragHandler(loginTitleBar, stage);
     }
 
     @FXML

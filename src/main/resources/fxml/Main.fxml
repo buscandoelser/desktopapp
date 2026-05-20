@@ -13,23 +13,12 @@
 
     <!-- ── HEADER SUPERIOR (64px) ─────────────────────────────────────── -->
     <top>
-        <HBox styleClass="header" prefHeight="64" alignment="CENTER_LEFT" spacing="16">
-            <padding><Insets left="24" right="24"/></padding>
+        <HBox fx:id="header" styleClass="header" prefHeight="64" alignment="CENTER_LEFT" spacing="16">
+            <padding><Insets left="24" right="0"/></padding>
 
             <Label text="Buscando El Ser" styleClass="header-logo"/>
 
             <Region HBox.hgrow="ALWAYS"/>
-
-            <!-- Capacity chip -->
-            <HBox styleClass="header-capacity-chip" alignment="CENTER_LEFT" spacing="8">
-                <Region styleClass="status-dot"/>
-                <VBox spacing="3" alignment="CENTER_LEFT">
-                    <Label fx:id="lblCapacidadMeta" text="Cargando..." styleClass="header-cap-meta"/>
-                    <ProgressBar fx:id="pbCapacidad" progress="0"
-                                 prefWidth="88" prefHeight="4"
-                                 styleClass="capacity-bar-mini"/>
-                </VBox>
-            </HBox>
 
             <VBox alignment="CENTER_RIGHT" spacing="2">
                 <Label fx:id="lblUsuarioNombre" text="Usuario" styleClass="header-user-name"/>
@@ -39,6 +28,9 @@
             <Button text="Salir"
                     onAction="#onCerrarSesion"
                     styleClass="btn-logout"/>
+
+            <!-- Window controls (min / max / close) injected by controller -->
+            <HBox fx:id="windowControlsHost" alignment="CENTER_RIGHT"/>
         </HBox>
     </top>
 

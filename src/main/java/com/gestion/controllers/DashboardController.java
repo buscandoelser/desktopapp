@@ -13,33 +13,45 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class DashboardController {
 
-    @FXML private Label lblFecha;
-    @FXML private Label lblInternosActivos;
-    @FXML private Label lblInternosDelta;
-    @FXML private Label lblCobranzasMes;
-    @FXML private Label lblCobranzasDelta;
-    @FXML private Label lblPendientes;
-    @FXML private Label lblPendientesDelta;
-    @FXML private Label lblPlazas;
-    @FXML private Label lblPlazasDelta;
+    @FXML private Label     lblFecha;
+    @FXML private Label     lblCobranzasMes;
+    @FXML private Label     lblCobranzasDelta;
+    @FXML private Label     lblPlazas;
+    @FXML private Label     lblPlazasDelta;
     @FXML private VBox      listCobranzas;
-    @FXML private VBox      listAltas;
+
+    // Ring 1: ocupación
     @FXML private StackPane capacityRingHost;
     @FXML private Label     lblOcupadasValor;
     @FXML private Label     lblLibresValor;
     @FXML private Label     lblCapacidadTotal;
 
+    // Ring 2: deuda
+    @FXML private StackPane deudaRingHost;
+    @FXML private Label     lblConDeudaValor;
+    @FXML private Label     lblAlDiaValor;
+    @FXML private Label     lblTotalInternosDeuda;
+
     private static final int CAPACIDAD_TOTAL = 40;
+
     private CapacityRing capacityRing;
+    private CapacityRing deudaRing;
+
+    // Coordinated state for deuda ring (loaded asynchronously from 2 sources)
+    private Integer totalInternosActivos = null;
+    private Integer cantidadDeudores     = null;
 
     private MainController mainController;
 
@@ -52,21 +64,35 @@ public class DashboardController {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("d 'de' MMMM yyyy", Locale.of("es", "AR"));
         lblFecha.setText("Hoy, " + LocalDate.now().format(fmt));
 
-        buildCapacityRing();
+        buildRings();
 
         cargarInternosActivos();
         cargarIngresosMes();
         cargarDeudaTotal();
         cargarCuotasRecientes();
-        cargarProximasAltas();
     }
 
-    private void buildCapacityRing() {
+    // ── Rings setup ───────────────────────────────────────────────────────
+
+    private void buildRings() {
+        // Capacity ring (amber)
         capacityRing = new CapacityRing(190, 18);
         capacityRing.setSubText("ocupación");
         capacityRingHost.getChildren().setAll(capacityRing);
         lblCapacidadTotal.setText("Capacidad total: " + CAPACIDAD_TOTAL + " plazas");
+
+        // Deuda ring (danger / coral red gradient)
+        deudaRing = new CapacityRing(190, 18);
+        deudaRing.setSubText("con deuda");
+        deudaRing.setProgressPaint(new LinearGradient(
+            0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
+            new Stop(0.0, Color.web("#E07B58")),
+            new Stop(1.0, Color.web("#A8412E"))
+        ));
+        deudaRingHost.getChildren().setAll(deudaRing);
     }
+
+    // ── Data loaders ──────────────────────────────────────────────────────
 
     private void cargarInternosActivos() {
         CompletableFuture
@@ -77,15 +103,13 @@ public class DashboardController {
                     int libres  = Math.max(0, CAPACIDAD_TOTAL - activos);
                     double pct  = (double) activos / CAPACIDAD_TOTAL;
 
-                    lblInternosActivos.setText(String.valueOf(activos));
-                    lblInternosDelta.setText("activos en tratamiento");
-
                     lblOcupadasValor.setText(String.valueOf(activos));
                     lblLibresValor.setText(String.valueOf(libres));
                     if (capacityRing != null) capacityRing.setProgress(pct, true);
+
+                    totalInternosActivos = activos;
+                    actualizarDeudaRing();
                 } else {
-                    lblInternosActivos.setText("—");
-                    lblInternosDelta.setText("Sin conexión");
                     lblOcupadasValor.setText("—");
                     lblLibresValor.setText("—");
                 }
@@ -116,18 +140,33 @@ public class DashboardController {
             .thenAcceptAsync(result -> {
                 if (result.success && result.data != null) {
                     JsonNode data = result.data;
-                    lblPendientes.setText(data.has("cantidad_deudores") ? data.get("cantidad_deudores").asText() : "—");
-                    lblPendientesDelta.setText("internos con deuda");
                     String deuda = data.has("deuda_total") ? "$" + data.get("deuda_total").asText() : "—";
                     lblPlazas.setText(deuda);
-                    lblPlazasDelta.setText("deuda total acumulada");
+                    lblPlazasDelta.setText("monto pendiente de cobro");
+
+                    cantidadDeudores = data.has("cantidad_deudores") ? data.get("cantidad_deudores").asInt() : 0;
+                    actualizarDeudaRing();
                 } else {
-                    lblPendientes.setText("—");
-                    lblPendientesDelta.setText("Sin datos");
                     lblPlazas.setText("—");
-                    lblPlazasDelta.setText("");
+                    lblPlazasDelta.setText("Sin datos");
                 }
             }, Platform::runLater);
+    }
+
+    /** Recalculates the deuda ring once both internos count and deudores count have arrived. */
+    private void actualizarDeudaRing() {
+        if (totalInternosActivos == null || cantidadDeudores == null) return;
+        if (deudaRing == null) return;
+
+        int total = totalInternosActivos;
+        int conDeuda = Math.min(cantidadDeudores, total);
+        int alDia    = Math.max(0, total - conDeuda);
+        double pct   = total > 0 ? (double) conDeuda / total : 0;
+
+        lblConDeudaValor.setText(String.valueOf(conDeuda));
+        lblAlDiaValor.setText(String.valueOf(alDia));
+        lblTotalInternosDeuda.setText("Total de internos: " + total);
+        deudaRing.setProgress(pct, true);
     }
 
     private void cargarCuotasRecientes() {
@@ -145,21 +184,6 @@ public class DashboardController {
                     String monto  = "$" + cuota.getTotalConInteres();
                     String estado = cuota.getEstadoDisplay();
                     listCobranzas.getChildren().add(filaCobranza(fecha, nombre, cuota.getMesPeriodo(), monto, estado));
-                });
-            }, Platform::runLater);
-    }
-
-    private void cargarProximasAltas() {
-        CompletableFuture
-            .supplyAsync(() -> InternoService.listar("alta", null, 1))
-            .thenAcceptAsync(result -> {
-                listAltas.getChildren().clear();
-                if (!result.success || result.data == null) return;
-
-                result.data.stream().limit(3).forEach(i -> {
-                    String fecha = i.getFechaEgreso() != null && i.getFechaEgreso().length() >= 10
-                            ? i.getFechaEgreso().substring(5, 10).replace("-", "/") : "—";
-                    listAltas.getChildren().add(filaAlta(fecha, i.getNombreCompleto(), i.getMotivoEgreso() != null ? i.getMotivoEgreso() : "Alta médica"));
                 });
             }, Platform::runLater);
     }
@@ -188,25 +212,6 @@ public class DashboardController {
         });
 
         row.getChildren().addAll(lFecha, main, lMonto, lEstado);
-        return row;
-    }
-
-    private HBox filaAlta(String fecha, String nombre, String motivo) {
-        HBox row = new HBox(12);
-        row.getStyleClass().add("mini-row");
-        row.setPadding(new Insets(11, 16, 11, 16));
-
-        Label lFecha = new Label(fecha);
-        lFecha.getStyleClass().add("mini-date");
-        lFecha.setMinWidth(44);
-
-        VBox main = new VBox(2);
-        HBox.setHgrow(main, Priority.ALWAYS);
-        Label lNombre = new Label(nombre); lNombre.getStyleClass().add("mini-title");
-        Label lMotivo = new Label(motivo); lMotivo.getStyleClass().add("mini-sub");
-        main.getChildren().addAll(lNombre, lMotivo);
-
-        row.getChildren().addAll(lFecha, main);
         return row;
     }
 

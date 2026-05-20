@@ -2,8 +2,8 @@ package com.gestion.controllers;
 
 import com.gestion.config.AppConfig;
 import com.gestion.services.AuthService;
-import com.gestion.services.InternoService;
 import com.gestion.ui.InteractiveDock;
+import com.gestion.ui.WindowControls;
 import com.gestion.utils.AlertHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,16 +17,15 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class MainController {
 
-    @FXML private BorderPane  rootPane;
-    @FXML private Label       lblUsuarioNombre;
-    @FXML private Label       lblUsuarioRol;
-    @FXML private StackPane   contenidoPrincipal;
-    @FXML private ProgressBar pbCapacidad;
-    @FXML private Label       lblCapacidadMeta;
+    @FXML private BorderPane rootPane;
+    @FXML private HBox       header;
+    @FXML private HBox       windowControlsHost;
+    @FXML private Label      lblUsuarioNombre;
+    @FXML private Label      lblUsuarioRol;
+    @FXML private StackPane  contenidoPrincipal;
 
     private InteractiveDock dock;
 
@@ -36,7 +35,19 @@ public class MainController {
         lblUsuarioRol.setText(rolDisplay(AppConfig.getUsuarioRol()));
 
         buildDock();
-        actualizarCapacidad();
+        setupWindowChrome();
+    }
+
+    // ── Window chrome (UNDECORATED stage) ─────────────────────────────────
+
+    private void setupWindowChrome() {
+        Stage stage = AppConfig.getPrimaryStage();
+        if (stage == null) return;
+
+        windowControlsHost.getChildren().setAll(
+                WindowControls.createControls(stage, true)
+        );
+        WindowControls.attachDragHandler(header, stage);
     }
 
     // ── Dock setup ────────────────────────────────────────────────────────
@@ -62,13 +73,11 @@ public class MainController {
         dock.setOnSelectionChanged(this::cargarModulo);
         rootPane.setBottom(dock);
 
-        // Load Dashboard as the first screen
         dock.selectItem(0);
     }
 
     // ── Navigation ────────────────────────────────────────────────────────
 
-    /** Loads an FXML module into the center pane. Called by the dock callback. */
     private void cargarModulo(String modulo) {
         try {
             String fxmlPath = "/fxml/" + capitalize(modulo) + ".fxml";
@@ -88,7 +97,6 @@ public class MainController {
         }
     }
 
-    /** Public entry point so DashboardController can trigger navigation. */
     public void navegarACobranzas() {
         dock.selectById("cobranzas");
     }
@@ -115,30 +123,19 @@ public class MainController {
             );
 
             Stage stage = AppConfig.getPrimaryStage();
-            stage.setScene(scene);
-            stage.setResizable(false);
+            // Unmaximize and reset min size BEFORE applying new dimensions —
+            // otherwise the 1200×700 minimums set on login keep the stage huge.
             stage.setMaximized(false);
+            stage.setResizable(false);
+            stage.setMinWidth(0);
+            stage.setMinHeight(0);
+            stage.setScene(scene);
+            stage.setWidth(860);
+            stage.setHeight(560);
             stage.centerOnScreen();
         } catch (Exception e) {
             AlertHelper.error("Error al cerrar sesión: " + e.getMessage());
         }
-    }
-
-    // ── Capacity bar ──────────────────────────────────────────────────────
-
-    private void actualizarCapacidad() {
-        final int CAPACIDAD_TOTAL = 40;
-        CompletableFuture
-            .supplyAsync(() -> InternoService.listar("activo", null, 1))
-            .thenAcceptAsync(result -> {
-                if (!result.success) return;
-                int activos = result.total;
-                int libres  = Math.max(0, CAPACIDAD_TOTAL - activos);
-                double pct  = (double) activos / CAPACIDAD_TOTAL;
-
-                pbCapacidad.setProgress(pct);
-                lblCapacidadMeta.setText(activos + " internos · " + libres + " libres");
-            }, Platform::runLater);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────

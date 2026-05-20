@@ -127,4 +127,12 @@
 
     </VBox>
 
+    <!-- ─── CAPA 4 (overlay): barra de título propia (UNDECORATED stage) ─── -->
+    <HBox fx:id="loginTitleBar" prefHeight="34" maxHeight="34"
+          alignment="CENTER_RIGHT"
+          StackPane.alignment="TOP_CENTER"
+          style="-fx-background-color: transparent;">
+        <HBox fx:id="loginWindowControlsHost" alignment="CENTER_RIGHT"/>
+    </HBox>
+
 </StackPane>

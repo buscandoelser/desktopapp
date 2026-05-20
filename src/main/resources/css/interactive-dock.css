@@ -166,33 +166,92 @@
 }
 
 /* Legend rows under the ring */
+.capacity-legend-dot.used   { -fx-background-color: #F4B23A; }
+.capacity-legend-dot.free   { -fx-background-color: #EFE5C9; }
+.capacity-legend-dot.deuda  { -fx-background-color: #C2553F; }
+.capacity-legend-dot.al-dia { -fx-background-color: #EFE5C9; }
+
 .capacity-legend-row {
     -fx-alignment: CENTER_LEFT;
-    -fx-spacing: 8;
+    -fx-spacing: 10;
 }
 
 .capacity-legend-dot {
-    -fx-min-width: 10; -fx-min-height: 10;
-    -fx-max-width: 10; -fx-max-height: 10;
-    -fx-background-radius: 10;
+    -fx-min-width: 11; -fx-min-height: 11;
+    -fx-max-width: 11; -fx-max-height: 11;
+    -fx-background-radius: 11;
 }
 
-.capacity-legend-dot.used { -fx-background-color: #F4B23A; }
-.capacity-legend-dot.free { -fx-background-color: #EFE5C9; }
-
 .capacity-legend-label {
-    -fx-font-size: 12px;
+    -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
     -fx-text-fill: #3A2E1F;
 }
 
 .capacity-legend-value {
-    -fx-font-size: 12px;
-    -fx-font-weight: 700;
+    -fx-font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
     -fx-text-fill: #3A2E1F;
 }
 
 .capacity-total-label {
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
     -fx-text-fill: #7C6B52;
-    -fx-padding: 6 0 0 0;
+    -fx-padding: 10 0 0 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Custom window controls (UNDECORATED stage)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.win-controls {
+    -fx-spacing: 0;
+    -fx-padding: 0;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.win-ctrl {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-padding: 0 16 0 16;
+    -fx-pref-height: 36;
+    -fx-min-height: 36;
+    -fx-pref-width: 46;
+    -fx-min-width: 46;
+    -fx-cursor: hand;
+    -fx-focus-traversable: false;
+}
+
+.win-ctrl:hover {
+    -fx-background-color: rgba(58, 46, 31, 0.08);
+}
+
+.win-ctrl:pressed {
+    -fx-background-color: rgba(58, 46, 31, 0.14);
+}
+
+.win-ctrl:focused {
+    -fx-background-color: transparent;
+}
+
+.win-ctrl-icon {
+    -fx-background-color: #3A2E1F;
+}
+
+/* Close button — red on hover, white icon */
+.win-ctrl-close:hover {
+    -fx-background-color: #C2553F;
+}
+
+.win-ctrl-close:pressed {
+    -fx-background-color: #A8412E;
+}
+
+.win-ctrl-close:hover .win-ctrl-icon,
+.win-ctrl-close:pressed .win-ctrl-icon {
+    -fx-background-color: white;
 }
