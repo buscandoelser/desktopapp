@@ -1006,9 +1006,9 @@
 
 .card-head {
     -fx-padding: 14 18 14 18;
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF6B1A 0%, #D4500A 100%);
+    -fx-background-color: rgba(255,107,26,0.10);
     -fx-background-radius: 14 14 0 0;
-    -fx-border-color: transparent transparent #C2520F transparent;
+    -fx-border-color: transparent transparent rgba(255,107,26,0.30) transparent;
     -fx-border-width: 0 0 1 0;
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 12;
@@ -1017,12 +1017,14 @@
 .card-title {
     -fx-font-size: 14px;
     -fx-font-weight: 800;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #FF6B1A;
 }
 
-.card-head .stat-value,
+.card-head .stat-value {
+    -fx-text-fill: #FF6B1A;
+}
 .card-head .label-secondary {
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #A1A1AA;
 }
 
 /* ─────────────────── MINI LIST ROWS ─────────────────── */
@@ -1060,8 +1062,8 @@
 
 /* ─────────────────── REPORT CARDS ─────────────────── */
 .report-card {
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF6B1A, #D4500A);
-    -fx-border-color: #C2520F;
+    -fx-background-color: #1A1A1A;
+    -fx-border-color: rgba(255,107,26,0.40);
     -fx-border-width: 1;
     -fx-border-radius: 14;
     -fx-background-radius: 14;
@@ -1069,16 +1071,17 @@
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 14;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.35), 14, 0, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.18), 14, 0, 0, 4);
 }
 
 .report-card:hover {
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #FF8438, #E55F12);
-    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.55), 20, 0, 0, 6);
+    -fx-background-color: #222222;
+    -fx-border-color: #FF6B1A;
+    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.40), 20, 0, 0, 6);
 }
 
 .report-card-icon {
-    -fx-background-color: rgba(255,255,255,0.22);
+    -fx-background-color: rgba(255,107,26,0.18);
     -fx-background-radius: 10;
     -fx-font-size: 18px;
     -fx-alignment: CENTER;
@@ -1091,12 +1094,12 @@
 .report-card-title {
     -fx-font-size: 14px;
     -fx-font-weight: 700;
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #FF6B1A;
 }
 
 .report-card-sub {
     -fx-font-size: 12px;
-    -fx-text-fill: rgba(255,255,255,0.85);
+    -fx-text-fill: #A1A1AA;
 }
 
 /* ─────────────────── SIDEBAR CAPACITY CARD ─────────────────── */
