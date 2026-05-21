@@ -531,18 +531,19 @@
 
 /* ─────────────────── HEADER / TOPBAR ─────────────────── */
 .header {
-    -fx-background-color: #111111;
-    -fx-border-color: transparent transparent #2A2A2A transparent;
+    -fx-background-color: #111111, rgba(255,107,26,0.18);
+    -fx-background-insets: 0, 0;
+    -fx-border-color: rgba(255,107,26,0.50);
     -fx-border-width: 0 0 1 0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 12, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.30), 14, 0, 0, 3);
 }
 
 .header-logo {
-    -fx-font-size: 19px;
-    -fx-font-weight: bold;
+    -fx-font-size: 21px;
+    -fx-font-weight: 800;
     -fx-text-fill: #FF6B1A;
-    -fx-font-style: italic;
-    -fx-font-family: "Georgia", "Times New Roman", serif;
+    -fx-font-family: "Nunito ExtraBold", "Nunito", "Inter", "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(255,107,26,0.35), 8, 0, 0, 0);
 }
 
 .header-user-name {
